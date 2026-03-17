@@ -1,0 +1,331 @@
+{
+  "info": {
+    "name": "VMAS API Collection",
+    "description": "Vehicle Management Authentication System - Complete API Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register - ADMIN",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"admin\",\n    \"email\": \"admin@vmas.com\",\n    \"password\": \"admin123\",\n    \"role\": \"ADMIN\",\n    \"profilePicture\": \"https://example.com/admin.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register - CONTROLLER",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"controller\",\n    \"email\": \"controller@vmas.com\",\n    \"password\": \"controller123\",\n    \"role\": \"CONTROLLER\",\n    \"profilePicture\": \"https://example.com/controller.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register - DRIVER",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"driver\",\n    \"email\": \"driver@vmas.com\",\n    \"password\": \"driver123\",\n    \"role\": \"DRIVER\",\n    \"profilePicture\": \"https://example.com/driver.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login - ADMIN",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"admin\",\n    \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login - DRIVER",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"driver\",\n    \"password\": \"driver123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management (ADMIN Only)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "description": "Uses admin token from environment variable or replace with actual admin token from login"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users"]
+            },
+            "description": "Get all users in the system. Only accessible by ADMIN role."
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "description": "Admin can access any user, or user can access their own profile"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/users/{{targetUserId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "{{targetUserId}}"]
+            },
+            "description": "Get user by ID. ADMIN can access any user, or users can access their own profile."
+          }
+        },
+        {
+          "name": "Create User (Manual)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "description": "Requires admin token"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"newuser\",\n    \"email\": \"newuser@vmas.com\",\n    \"password\": \"newuser123\",\n    \"role\": \"DRIVER\",\n    \"profilePicture\": \"https://example.com/newuser.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users"]
+            },
+            "description": "Create a new user manually. Only ADMIN can create users. Uses RegisterRequest structure with userName, email, password, role (ADMIN/CONTROLLER/DRIVER), and profilePicture."
+          }
+        },
+        {
+          "name": "Update User (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "description": "Uses admin token from environment variable"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"admin\",\n    \"email\": \"admin@vmas.com\",\n    \"role\": \"ADMIN\",\n    \"accountStatus\": \"ACTIVE\",\n    \"profilePicture\": \"https://example.com/admin-updated.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/{{targetUserId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "{{targetUserId}}"]
+            },
+            "description": "Update user by ID. Admin can update any user. Body uses UserDto structure with userName, email, role (ADMIN/CONTROLLER/DRIVER), accountStatus (ACTIVE/INACTIVE/SUSPENDED), and profilePicture."
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "description": "Requires admin token"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/users/{{deleteUserId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "{{deleteUserId}}"]
+            },
+            "description": "Delete a user by ID. Only ADMIN can delete users. Returns success message on completion."
+          }
+        }
+      ]
+    },
+    {
+      "name": "RBAC Testing",
+      "item": [
+        {
+          "name": "DRIVER tries to access ALL Users (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{driverToken}}",
+                "description": "This should return 403 Forbidden - Driver doesn't have permission"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users"]
+            },
+            "description": "Test RBAC - Driver role should NOT be able to access all users endpoint (expects 403 Forbidden)"
+          }
+        },
+        {
+          "name": "DRIVER updates own profile (Success)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{driverToken}}",
+                "description": "Driver can update their own profile"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"driver\",\n    \"email\": \"driver@vmas.com\",\n    \"role\": \"DRIVER\",\n    \"accountStatus\": \"ACTIVE\",\n    \"profilePicture\": \"https://example.com/driver-updated.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/3",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "3"]
+            },
+            "description": "Test RBAC - Driver can update their own profile (change ID to match your driver's ID)"
+          }
+        },
+        {
+          "name": "DRIVER tries to delete user (403)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{driverToken}}",
+                "description": "Driver should NOT be able to delete users"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "1"]
+            },
+            "description": "Test RBAC - Driver role should NOT be able to delete users (expects 403 Forbidden)"
+          }
+        }
+      ]
+    }
+  ]
+}
