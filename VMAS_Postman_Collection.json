@@ -23,7 +23,7 @@
               "raw": "{\n    \"userName\": \"admin\",\n    \"email\": \"admin@vmas.com\",\n    \"password\": \"admin123\",\n    \"role\": \"ADMIN\",\n    \"profilePicture\": \"https://example.com/admin.jpg\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8080/api/auth/register",
+              "raw": "{{baseUrl}}/api/auth/register",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -43,10 +43,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"controller\",\n    \"email\": \"controller@vmas.com\",\n    \"password\": \"controller123\",\n    \"role\": \"CONTROLLER\",\n    \"profilePicture\": \"https://example.com/controller.jpg\"\n}"
+              "raw": "{\n    \"userName\": \"controller1\",\n    \"email\": \"controller@vmas.com\",\n    \"password\": \"controller123\",\n    \"role\": \"CONTROLLER\",\n    \"profilePicture\": \"https://example.com/controller.jpg\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8080/api/auth/register",
+              "raw": "{{baseUrl}}/api/auth/register",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -66,10 +66,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"driver\",\n    \"email\": \"driver@vmas.com\",\n    \"password\": \"driver123\",\n    \"role\": \"DRIVER\",\n    \"profilePicture\": \"https://example.com/driver.jpg\"\n}"
+              "raw": "{\n    \"userName\": \"driver1\",\n    \"email\": \"driver@vmas.com\",\n    \"password\": \"driver123\",\n    \"role\": \"DRIVER\",\n    \"profilePicture\": \"https://example.com/driver.jpg\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8080/api/auth/register",
+              "raw": "{{baseUrl}}/api/auth/register",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -92,13 +92,27 @@
               "raw": "{\n    \"userName\": \"admin\",\n    \"password\": \"admin123\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8080/api/auth/login",
+              "raw": "{{baseUrl}}/api/auth/login",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
               "path": ["api", "auth", "login"]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.token) {",
+                  "    pm.environment.set('adminToken', json.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Login - DRIVER",
@@ -112,16 +126,30 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"driver\",\n    \"password\": \"driver123\"\n}"
+              "raw": "{\n    \"userName\": \"driver1\",\n    \"password\": \"driver123\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8080/api/auth/login",
+              "raw": "{{baseUrl}}/api/auth/login",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
               "path": ["api", "auth", "login"]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.token) {",
+                  "    pm.environment.set('driverToken', json.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -140,7 +168,7 @@
               }
             ],
             "url": {
-              "raw": "http://localhost:8080/api/users",
+              "raw": "{{baseUrl}}/api/users",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -161,7 +189,7 @@
               }
             ],
             "url": {
-              "raw": "http://localhost:8080/api/users/{{targetUserId}}",
+              "raw": "{{baseUrl}}/api/users/{{targetUserId}}",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -190,7 +218,7 @@
               "raw": "{\n    \"userName\": \"newuser\",\n    \"email\": \"newuser@vmas.com\",\n    \"password\": \"newuser123\",\n    \"role\": \"DRIVER\",\n    \"profilePicture\": \"https://example.com/newuser.jpg\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8080/api/users",
+              "raw": "{{baseUrl}}/api/users",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -219,7 +247,7 @@
               "raw": "{\n    \"userName\": \"admin\",\n    \"email\": \"admin@vmas.com\",\n    \"role\": \"ADMIN\",\n    \"accountStatus\": \"ACTIVE\",\n    \"profilePicture\": \"https://example.com/admin-updated.jpg\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8080/api/users/{{targetUserId}}",
+              "raw": "{{baseUrl}}/api/users/{{targetUserId}}",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -240,7 +268,7 @@
               }
             ],
             "url": {
-              "raw": "http://localhost:8080/api/users/{{deleteUserId}}",
+              "raw": "{{baseUrl}}/api/users/{{deleteUserId}}",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -266,7 +294,7 @@
               }
             ],
             "url": {
-              "raw": "http://localhost:8080/api/users",
+              "raw": "{{baseUrl}}/api/users",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -295,7 +323,7 @@
               "raw": "{\n    \"userName\": \"driver\",\n    \"email\": \"driver@vmas.com\",\n    \"role\": \"DRIVER\",\n    \"accountStatus\": \"ACTIVE\",\n    \"profilePicture\": \"https://example.com/driver-updated.jpg\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8080/api/users/3",
+              "raw": "{{baseUrl}}/api/users/3",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -316,7 +344,7 @@
               }
             ],
             "url": {
-              "raw": "http://localhost:8080/api/users/1",
+              "raw": "{{baseUrl}}/api/users/1",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
@@ -329,3 +357,4 @@
     }
   ]
 }
+
