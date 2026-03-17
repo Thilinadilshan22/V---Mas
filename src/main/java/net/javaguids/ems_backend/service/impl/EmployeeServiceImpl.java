@@ -9,8 +9,8 @@ import net.javaguids.ems_backend.repository.EmployeeRepository;
 import net.javaguids.ems_backend.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
-import java.util.EmptyStackException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,10 +18,11 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
+
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
-        Employee savedEmployee = employeeRepository.save(employee);
+        Employee savedEmployee = employeeRepository.save(Objects.requireNonNull(employee));
         return EmployeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
@@ -32,7 +33,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto getEmployeeById(Long employeeId) {
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+        Long requiredEmployeeId = Objects.requireNonNull(employeeId);
+        Employee employee = employeeRepository.findById(requiredEmployeeId).orElseThrow(
                 () -> new ResourceNotFoundExeption("Employee not found by Given ID : " + employeeId));
         return EmployeeMapper.mapToEmployeeDto(employee);
     }
@@ -46,26 +48,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(
-                () -> new ResourceNotFoundExeption("Employee not found by Given ID : " + employeeId)
-        );
+        Long requiredEmployeeId = Objects.requireNonNull(employeeId);
+        Employee employee = employeeRepository.findById(requiredEmployeeId).orElseThrow(
+                () -> new ResourceNotFoundExeption("Employee not found by Given ID : " + employeeId));
 
         employee.setFirstName(updatedEmployee.getFirstName());
         employee.setLastName(updatedEmployee.getLastName());
         employee.setEmail(updatedEmployee.getEmail());
 
-        Employee updatedEmployeeObj = employeeRepository.save(employee);
+        Employee updatedEmployeeObj = employeeRepository.save(Objects.requireNonNull(employee));
         return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);
     }
 
     @Override
     public void deleteEmployee(Long employeeId) {
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(
-                () -> new ResourceNotFoundExeption("Employee not found by Given ID : " + employeeId)
-        );
+        Long requiredEmployeeId = Objects.requireNonNull(employeeId);
+        Employee employee = employeeRepository.findById(requiredEmployeeId).orElseThrow(
+                () -> new ResourceNotFoundExeption("Employee not found by Given ID : " + employeeId));
 
-        employeeRepository.deleteById(employeeId);
+        employeeRepository.delete(Objects.requireNonNull(employee));
     }
-
 
 }

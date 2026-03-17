@@ -13,11 +13,11 @@ import net.javaguids.ems_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,9 +61,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword())
-        );
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
 
         User user = userRepository.findByUserName(request.getUserName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -81,7 +80,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        User user = userRepository.findById(id)
+        Long requiredId = Objects.requireNonNull(id);
+        User user = userRepository.findById(requiredId)
                 .orElseThrow(() -> new ResourceNotFoundExeption("User not found with id: " + id));
         return mapToDto(user);
     }
@@ -103,13 +103,14 @@ public class UserServiceImpl implements UserService {
         user.setAccountStatus(AccountStatus.ACTIVE);
         user.setProfilePicture(request.getProfilePicture());
 
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(Objects.requireNonNull(user));
         return mapToDto(savedUser);
     }
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
-        User user = userRepository.findById(id)
+        Long requiredId = Objects.requireNonNull(id);
+        User user = userRepository.findById(requiredId)
                 .orElseThrow(() -> new ResourceNotFoundExeption("User not found with id: " + id));
 
         user.setUserName(userDto.getUserName());
@@ -118,15 +119,16 @@ public class UserServiceImpl implements UserService {
         user.setAccountStatus(userDto.getAccountStatus());
         user.setProfilePicture(userDto.getProfilePicture());
 
-        User updatedUser = userRepository.save(user);
+        User updatedUser = userRepository.save(Objects.requireNonNull(user));
         return mapToDto(updatedUser);
     }
 
     @Override
     public void deleteUser(Long id) {
-        User user = userRepository.findById(id)
+        Long requiredId = Objects.requireNonNull(id);
+        User user = userRepository.findById(requiredId)
                 .orElseThrow(() -> new ResourceNotFoundExeption("User not found with id: " + id));
-        userRepository.delete(user);
+        userRepository.delete(Objects.requireNonNull(user));
     }
 
     private UserDto mapToDto(User user) {
@@ -136,7 +138,6 @@ public class UserServiceImpl implements UserService {
                 user.getEmail(),
                 user.getRole(),
                 user.getAccountStatus(),
-                user.getProfilePicture()
-        );
+                user.getProfilePicture());
     }
 }
