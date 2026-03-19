@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
-    private String token;
-    private String userName;
-    private String role;
+public class ApiResponse<T> {
+    private boolean success;
+    private String message;
+    private T data;
 }
