@@ -44,6 +44,9 @@ echo.
 echo ========================================
 echo Application starting...
 echo Press Ctrl+C to stop the server
+echo.
+echo TIP: Open a new terminal and run setup-frontend.bat
+echo      to start the React frontend
 echo ========================================
 echo.
 call mvnw.cmd spring-boot:run

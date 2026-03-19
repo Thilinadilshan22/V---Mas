@@ -52,11 +52,11 @@ public class UserServiceImpl implements UserService {
         user.setAccountStatus(AccountStatus.ACTIVE);
         user.setProfilePicture(request.getProfilePicture());
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getUserName(), user.getRole().name());
+        String token = jwtUtil.generateToken(savedUser.getUserName(), savedUser.getRole().name());
 
-        return new AuthResponse(token, user.getUserName(), user.getRole().name());
+        return new AuthResponse(token, mapToDto(savedUser));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtUtil.generateToken(user.getUserName(), user.getRole().name());
 
-        return new AuthResponse(token, user.getUserName(), user.getRole().name());
+        return new AuthResponse(token, mapToDto(user));
     }
 
     @Override
