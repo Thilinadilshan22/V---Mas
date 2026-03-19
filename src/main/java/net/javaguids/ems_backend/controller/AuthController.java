@@ -8,6 +8,8 @@ import net.javaguids.ems_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -32,5 +34,19 @@ public class AuthController {
         AuthResponse response = userService.login(request);
         log.info("User logged in successfully: {}", request.getUserName());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+            String username = auth.getName();
+            log.info("Logout request received for username: {}", username);
+            SecurityContextHolder.clearContext();
+            log.info("User logged out successfully: {}", username);
+            return ResponseEntity.ok("Logout successful. Please remove the token from client.");
+        }
+        log.warn("Logout attempt with no authenticated user");
+        return ResponseEntity.ok("Already logged out");
     }
 }

@@ -261,6 +261,135 @@
             "description": "Login with DRIVER credentials. Token is automatically saved to environment variable 'driverToken'."
           },
           "response": []
+        },
+        {
+          "name": "Logout - ADMIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Logout successful\", function () {",
+                  "    var jsonData = pm.response.text();",
+                  "    pm.expect(jsonData).to.include('Logout successful');",
+                  "    pm.environment.unset('adminToken');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Logout ADMIN user. Token is automatically removed from environment."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout - CONTROLLER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Logout successful\", function () {",
+                  "    var jsonData = pm.response.text();",
+                  "    pm.expect(jsonData).to.include('Logout successful');",
+                  "    pm.environment.unset('controllerToken');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{controllerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Logout CONTROLLER user. Token is automatically removed from environment."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout - DRIVER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Logout successful\", function () {",
+                  "    var jsonData = pm.response.text();",
+                  "    pm.expect(jsonData).to.include('Logout successful');",
+                  "    pm.environment.unset('driverToken');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{driverToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Logout DRIVER user. Token is automatically removed from environment."
+          },
+          "response": []
         }
       ]
     },
