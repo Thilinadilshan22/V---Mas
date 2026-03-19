@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtUtil.generateToken(user.getUserName(), user.getRole().name());
 
-        return new AuthResponse(token, user.getUserName(), user.getRole().name(), "Registration successful");
+        return new AuthResponse(token, user.getUserName(), user.getRole().name());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtUtil.generateToken(user.getUserName(), user.getRole().name());
 
-        return new AuthResponse(token, user.getUserName(), user.getRole().name(), "Login successful");
+        return new AuthResponse(token, user.getUserName(), user.getRole().name());
     }
 
     @Override

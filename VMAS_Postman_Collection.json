@@ -23,8 +23,8 @@
                   "",
                   "pm.test(\"Response has token\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.token).to.exist;",
-                  "    pm.environment.set(\"adminToken\", jsonData.token);",
+                  "    pm.expect(jsonData.data.token).to.exist;",
+                  "    pm.environment.set(\"adminToken\", jsonData.data.token);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -65,8 +65,8 @@
                   "",
                   "pm.test(\"Response has token\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.token).to.exist;",
-                  "    pm.environment.set(\"controllerToken\", jsonData.token);",
+                  "    pm.expect(jsonData.data.token).to.exist;",
+                  "    pm.environment.set(\"controllerToken\", jsonData.data.token);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -107,8 +107,8 @@
                   "",
                   "pm.test(\"Response has token\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.token).to.exist;",
-                  "    pm.environment.set(\"driverToken\", jsonData.token);",
+                  "    pm.expect(jsonData.data.token).to.exist;",
+                  "    pm.environment.set(\"driverToken\", jsonData.data.token);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -149,8 +149,8 @@
                   "",
                   "pm.test(\"Response has token\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.token).to.exist;",
-                  "    pm.environment.set(\"adminToken\", jsonData.token);",
+                  "    pm.expect(jsonData.data.token).to.exist;",
+                  "    pm.environment.set(\"adminToken\", jsonData.data.token);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -191,8 +191,8 @@
                   "",
                   "pm.test(\"Response has token\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.token).to.exist;",
-                  "    pm.environment.set(\"controllerToken\", jsonData.token);",
+                  "    pm.expect(jsonData.data.token).to.exist;",
+                  "    pm.environment.set(\"controllerToken\", jsonData.data.token);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -233,8 +233,8 @@
                   "",
                   "pm.test(\"Response has token\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.token).to.exist;",
-                  "    pm.environment.set(\"driverToken\", jsonData.token);",
+                  "    pm.expect(jsonData.data.token).to.exist;",
+                  "    pm.environment.set(\"driverToken\", jsonData.data.token);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -274,8 +274,9 @@
                   "});",
                   "",
                   "pm.test(\"Logout successful\", function () {",
-                  "    var jsonData = pm.response.text();",
-                  "    pm.expect(jsonData).to.include('Logout successful');",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.message).to.include('Logout successful');",
                   "    pm.environment.unset('adminToken');",
                   "});"
                 ],
@@ -317,8 +318,9 @@
                   "});",
                   "",
                   "pm.test(\"Logout successful\", function () {",
-                  "    var jsonData = pm.response.text();",
-                  "    pm.expect(jsonData).to.include('Logout successful');",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.message).to.include('Logout successful');",
                   "    pm.environment.unset('controllerToken');",
                   "});"
                 ],
@@ -360,8 +362,9 @@
                   "});",
                   "",
                   "pm.test(\"Logout successful\", function () {",
-                  "    var jsonData = pm.response.text();",
-                  "    pm.expect(jsonData).to.include('Logout successful');",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.message).to.include('Logout successful');",
                   "    pm.environment.unset('driverToken');",
                   "});"
                 ],
@@ -410,7 +413,8 @@
                   "",
                   "pm.test(\"Response is array\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.data).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
