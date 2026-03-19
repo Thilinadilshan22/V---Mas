@@ -1,15 +1,36 @@
 {
   "info": {
-    "name": "VMAS API Collection",
-    "description": "Vehicle Management Authentication System - Complete API Testing",
+    "_postman_id": "vmas-api-collection-v1",
+    "name": "VMAS API - Vehicle Management Authentication System",
+    "description": "Complete API Collection for VMAS with JWT Authentication and Role-Based Access Control",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Authentication",
+      "name": "1. Authentication (Public)",
+      "description": "Public endpoints - No authentication required",
       "item": [
         {
           "name": "Register - ADMIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.token).to.exist;",
+                  "    pm.environment.set(\"adminToken\", jsonData.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -20,19 +41,38 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"admin\",\n    \"email\": \"admin@vmas.com\",\n    \"password\": \"admin123\",\n    \"role\": \"ADMIN\",\n    \"profilePicture\": \"https://example.com/admin.jpg\"\n}"
+              "raw": "{\n  \"userName\": \"admin\",\n  \"email\": \"admin@vmas.com\",\n  \"password\": \"admin123\",\n  \"role\": \"ADMIN\",\n  \"profilePicture\": \"https://ui-avatars.com/api/?name=Admin+User\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
+              "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "register"]
-            }
-          }
+            },
+            "description": "Register a new ADMIN user. Returns JWT token automatically saved to environment."
+          },
+          "response": []
         },
         {
           "name": "Register - CONTROLLER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.token).to.exist;",
+                  "    pm.environment.set(\"controllerToken\", jsonData.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -43,19 +83,38 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"controller1\",\n    \"email\": \"controller@vmas.com\",\n    \"password\": \"controller123\",\n    \"role\": \"CONTROLLER\",\n    \"profilePicture\": \"https://example.com/controller.jpg\"\n}"
+              "raw": "{\n  \"userName\": \"controller1\",\n  \"email\": \"controller@vmas.com\",\n  \"password\": \"controller123\",\n  \"role\": \"CONTROLLER\",\n  \"profilePicture\": \"https://ui-avatars.com/api/?name=Controller+User\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
+              "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "register"]
-            }
-          }
+            },
+            "description": "Register a new CONTROLLER user. Returns JWT token automatically saved to environment."
+          },
+          "response": []
         },
         {
           "name": "Register - DRIVER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.token).to.exist;",
+                  "    pm.environment.set(\"driverToken\", jsonData.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -66,19 +125,38 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"driver1\",\n    \"email\": \"driver@vmas.com\",\n    \"password\": \"driver123\",\n    \"role\": \"DRIVER\",\n    \"profilePicture\": \"https://example.com/driver.jpg\"\n}"
+              "raw": "{\n  \"userName\": \"driver1\",\n  \"email\": \"driver@vmas.com\",\n  \"password\": \"driver123\",\n  \"role\": \"DRIVER\",\n  \"profilePicture\": \"https://ui-avatars.com/api/?name=Driver+User\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
+              "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "register"]
-            }
-          }
+            },
+            "description": "Register a new DRIVER user. Returns JWT token automatically saved to environment."
+          },
+          "response": []
         },
         {
           "name": "Login - ADMIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.token).to.exist;",
+                  "    pm.environment.set(\"adminToken\", jsonData.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -89,230 +167,214 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"admin\",\n    \"password\": \"admin123\"\n}"
+              "raw": "{\n  \"userName\": \"admin\",\n  \"password\": \"admin123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
+              "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "login"]
-            }
+            },
+            "description": "Login with ADMIN credentials. Token is automatically saved to environment variable 'adminToken'."
           },
+          "response": []
+        },
+        {
+          "name": "Login - CONTROLLER",
           "event": [
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
-                  "const json = pm.response.json();",
-                  "if (json && json.token) {",
-                  "    pm.environment.set('adminToken', json.token);",
-                  "}"
-                ]
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.token).to.exist;",
+                  "    pm.environment.set(\"controllerToken\", jsonData.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
               }
             }
-          ]
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"controller1\",\n  \"password\": \"controller123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with CONTROLLER credentials. Token is automatically saved to environment variable 'controllerToken'."
+          },
+          "response": []
         },
         {
           "name": "Login - DRIVER",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"userName\": \"driver1\",\n    \"password\": \"driver123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "auth", "login"]
-            }
-          },
           "event": [
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
-                  "const json = pm.response.json();",
-                  "if (json && json.token) {",
-                  "    pm.environment.set('driverToken', json.token);",
-                  "}"
-                ]
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.token).to.exist;",
+                  "    pm.environment.set(\"driverToken\", jsonData.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
               }
             }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "User Management (ADMIN Only)",
-      "item": [
-        {
-          "name": "Get All Users",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}",
-                "description": "Uses admin token from environment variable or replace with actual admin token from login"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/users",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "users"]
-            },
-            "description": "Get all users in the system. Only accessible by ADMIN role."
-          }
-        },
-        {
-          "name": "Get User By ID",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}",
-                "description": "Admin can access any user, or user can access their own profile"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/users/{{targetUserId}}",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "users", "{{targetUserId}}"]
-            },
-            "description": "Get user by ID. ADMIN can access any user, or users can access their own profile."
-          }
-        },
-        {
-          "name": "Create User (Manual)",
+          ],
           "request": {
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}",
-                "description": "Requires admin token"
-              },
-              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"newuser\",\n    \"email\": \"newuser@vmas.com\",\n    \"password\": \"newuser123\",\n    \"role\": \"DRIVER\",\n    \"profilePicture\": \"https://example.com/newuser.jpg\"\n}"
+              "raw": "{\n  \"userName\": \"driver1\",\n  \"password\": \"driver123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "users"]
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
             },
-            "description": "Create a new user manually. Only ADMIN can create users. Uses RegisterRequest structure with userName, email, password, role (ADMIN/CONTROLLER/DRIVER), and profilePicture."
-          }
-        },
-        {
-          "name": "Update User (ADMIN)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}",
-                "description": "Uses admin token from environment variable"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"userName\": \"admin\",\n    \"email\": \"admin@vmas.com\",\n    \"role\": \"ADMIN\",\n    \"accountStatus\": \"ACTIVE\",\n    \"profilePicture\": \"https://example.com/admin-updated.jpg\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/users/{{targetUserId}}",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "users", "{{targetUserId}}"]
-            },
-            "description": "Update user by ID. Admin can update any user. Body uses UserDto structure with userName, email, role (ADMIN/CONTROLLER/DRIVER), accountStatus (ACTIVE/INACTIVE/SUSPENDED), and profilePicture."
-          }
-        },
-        {
-          "name": "Delete User",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}",
-                "description": "Requires admin token"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/users/{{deleteUserId}}",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "users", "{{deleteUserId}}"]
-            },
-            "description": "Delete a user by ID. Only ADMIN can delete users. Returns success message on completion."
-          }
+            "description": "Login with DRIVER credentials. Token is automatically saved to environment variable 'driverToken'."
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "RBAC Testing",
+      "name": "2. User Management (Protected)",
+      "description": "User management endpoints - Requires authentication",
       "item": [
         {
-          "name": "DRIVER tries to access ALL Users (403)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{driverToken}}",
-                "description": "This should return 403 Forbidden - Driver doesn't have permission"
+          "name": "Get All Users (ADMIN Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
               }
-            ],
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/users",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
+              "host": ["{{baseUrl}}"],
               "path": ["api", "users"]
             },
-            "description": "Test RBAC - Driver role should NOT be able to access all users endpoint (expects 403 Forbidden)"
-          }
+            "description": "Get all users in the system. Only accessible by ADMIN role."
+          },
+          "response": []
         },
         {
-          "name": "DRIVER updates own profile (Success)",
+          "name": "Get User By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
-            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "1"]
+            },
+            "description": "Get user by ID. ADMIN can access any user, regular users can only access their own profile."
+          },
+          "response": []
+        },
+        {
+          "name": "Create User (ADMIN Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{driverToken}}",
-                "description": "Driver can update their own profile"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -320,41 +382,218 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userName\": \"driver\",\n    \"email\": \"driver@vmas.com\",\n    \"role\": \"DRIVER\",\n    \"accountStatus\": \"ACTIVE\",\n    \"profilePicture\": \"https://example.com/driver-updated.jpg\"\n}"
+              "raw": "{\n  \"userName\": \"newuser\",\n  \"email\": \"newuser@vmas.com\",\n  \"password\": \"newuser123\",\n  \"role\": \"DRIVER\",\n  \"profilePicture\": \"https://ui-avatars.com/api/?name=New+User\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users/3",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "users", "3"]
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
             },
-            "description": "Test RBAC - Driver can update their own profile (change ID to match your driver's ID)"
-          }
+            "description": "Create a new user manually. Only ADMIN can create users."
+          },
+          "response": []
         },
         {
-          "name": "DRIVER tries to delete user (403)",
+          "name": "Update User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
-            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{driverToken}}",
-                "description": "Driver should NOT be able to delete users"
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"admin\",\n  \"email\": \"admin@vmas.com\",\n  \"role\": \"ADMIN\",\n  \"accountStatus\": \"ACTIVE\",\n  \"profilePicture\": \"https://ui-avatars.com/api/?name=Admin+Updated\"\n}"
+            },
             "url": {
               "raw": "{{baseUrl}}/api/users/1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
+              "host": ["{{baseUrl}}"],
               "path": ["api", "users", "1"]
             },
-            "description": "Test RBAC - Driver role should NOT be able to delete users (expects 403 Forbidden)"
-          }
+            "description": "Update user by ID. ADMIN can update any user, regular users can only update themselves."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User (ADMIN Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/4",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "4"]
+            },
+            "description": "Delete a user by ID. Only ADMIN can delete users."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. RBAC Testing",
+      "description": "Test Role-Based Access Control",
+      "item": [
+        {
+          "name": "Test No Token (Should Fail - 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees"]
+            },
+            "description": "Test accessing protected endpoint without token - should return 403 Forbidden"
+          },
+          "response": []
+        },
+        {
+          "name": "DRIVER Access Users (Should Fail - 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{driverToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Test RBAC - DRIVER should NOT be able to access all users (expects 403 Forbidden)"
+          },
+          "response": []
+        },
+        {
+          "name": "DRIVER Delete User (Should Fail - 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{driverToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "1"]
+            },
+            "description": "Test RBAC - DRIVER should NOT be able to delete users (expects 403 Forbidden)"
+          },
+          "response": []
         }
       ]
     }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
   ]
 }
-

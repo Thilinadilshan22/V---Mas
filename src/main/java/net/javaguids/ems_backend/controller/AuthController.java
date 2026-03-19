@@ -1,5 +1,6 @@
 package net.javaguids.ems_backend.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import net.javaguids.ems_backend.dto.AuthResponse;
 import net.javaguids.ems_backend.dto.LoginRequest;
 import net.javaguids.ems_backend.dto.RegisterRequest;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -18,13 +20,17 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        log.info("Register request received for username: {}", request.getUserName());
         AuthResponse response = userService.register(request);
+        log.info("User registered successfully: {}", request.getUserName());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        log.info("Login request received for username: {}", request.getUserName());
         AuthResponse response = userService.login(request);
+        log.info("User logged in successfully: {}", request.getUserName());
         return ResponseEntity.ok(response);
     }
 }
