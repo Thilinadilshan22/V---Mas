@@ -1,321 +1,222 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Navbar from '../components/Navbar'
+import Sidebar from '../components/Sidebar'
+import Topbar from '../components/Topbar'
 import { useAuth } from '../context/AuthContext'
 import { userAPI } from '../services/api'
 
+const StatCard = ({ icon, label, value, iconClass, change }) => (
+  <div className="stat-card">
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div>
+        <p className="stat-card-label">{label}</p>
+        <p className="stat-card-value">{value}</p>
+        {change && <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: 3 }}>{change}</p>}
+      </div>
+      <div className={`stat-card-icon ${iconClass}`}>{icon}</div>
+    </div>
+  </div>
+)
+
+const AdminDashboard = ({ stats, loading, navigate }) => {
+  if (loading) return (
+    <div className="loading-spinner"><div className="spinner"></div><span>Loading statistics...</span></div>
+  )
+  return (
+    <>
+      <div className="section-header" style={{ marginBottom: 14 }}>
+        <h2 className="section-title">User Statistics</h2>
+        <div className="section-divider"></div>
+      </div>
+      <div className="stats-grid" style={{ marginBottom: 28 }}>
+        <StatCard icon="👥" label="Total Users" value={stats.totalUsers} iconClass="icon-purple" change="Registered in system" />
+        <StatCard icon="🛡️" label="Admins" value={stats.admins} iconClass="icon-indigo" change="System administrators" />
+        <StatCard icon="🎮" label="Controllers" value={stats.controllers} iconClass="icon-blue" change="Fleet controllers" />
+        <StatCard icon="🚗" label="Drivers" value={stats.drivers} iconClass="icon-green" change="Vehicle operators" />
+        <StatCard icon="✅" label="Active" value={stats.activeUsers} iconClass="icon-green" change="Currently active accounts" />
+        <StatCard icon="⛔" label="Inactive" value={stats.inactiveUsers} iconClass="icon-red" change="Disabled accounts" />
+      </div>
+
+      <div className="section-header" style={{ marginBottom: 14 }}>
+        <h2 className="section-title">Quick Actions</h2>
+        <div className="section-divider"></div>
+      </div>
+      <div className="features-grid">
+        <div className="feature-card" onClick={() => navigate('/users')}>
+          <div className="feature-icon">👥</div>
+          <h3>User Management</h3>
+          <p>Create, view, edit, and delete users. Manage roles and account status.</p>
+          <button className="btn btn-primary btn-sm" style={{ marginTop: 14 }}>Open →</button>
+        </div>
+        <div className="feature-card" onClick={() => navigate('/profile')}>
+          <div className="feature-icon">👤</div>
+          <h3>My Profile</h3>
+          <p>View and manage your personal profile, role information, and settings.</p>
+          <button className="btn btn-secondary btn-sm" style={{ marginTop: 14 }}>View →</button>
+        </div>
+        <div className="feature-card" style={{ opacity: 0.5, cursor: 'default' }}>
+          <div className="feature-icon">📊</div>
+          <h3>System Reports</h3>
+          <p>Generate detailed reports on system usage, user activities, and performance.</p>
+          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        </div>
+        <div className="feature-card" style={{ opacity: 0.5, cursor: 'default' }}>
+          <div className="feature-icon">📝</div>
+          <h3>Audit Logs</h3>
+          <p>View and analyze system audit logs, activity history, and security events.</p>
+          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        </div>
+        <div className="feature-card" style={{ opacity: 0.5, cursor: 'default' }}>
+          <div className="feature-icon">⚙️</div>
+          <h3>System Settings</h3>
+          <p>Configure system-wide settings, security policies, and app parameters.</p>
+          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        </div>
+        <div className="feature-card" style={{ opacity: 0.5, cursor: 'default' }}>
+          <div className="feature-icon">🔔</div>
+          <h3>Notifications</h3>
+          <p>Manage system-wide notifications, alerts, and announcement broadcasts.</p>
+          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const ControllerDashboard = ({ navigate }) => (
+  <>
+    <div className="section-header" style={{ marginBottom: 14 }}>
+      <h2 className="section-title">Fleet Overview</h2>
+      <div className="section-divider"></div>
+    </div>
+    <div className="stats-grid" style={{ marginBottom: 28 }}>
+      <StatCard icon="🚗" label="Total Vehicles" value="24" iconClass="icon-purple" change="Under your management" />
+      <StatCard icon="✅" label="Active" value="18" iconClass="icon-green" change="Currently in use" />
+      <StatCard icon="🔧" label="Maintenance" value="4" iconClass="icon-orange" change="Being serviced" />
+      <StatCard icon="🟢" label="Available" value="2" iconClass="icon-blue" change="Ready to assign" />
+    </div>
+    <div className="section-header" style={{ marginBottom: 14 }}>
+      <h2 className="section-title">Controller Tools</h2>
+      <div className="section-divider"></div>
+    </div>
+    <div className="features-grid">
+      {[
+        { icon: '🚗', title: 'Vehicle Management', desc: 'Monitor, track, and manage all fleet vehicles.' },
+        { icon: '👨‍✈️', title: 'Driver Assignment', desc: 'Assign and manage drivers to vehicles and routes.' },
+        { icon: '📍', title: 'Live Tracking', desc: 'Real-time GPS tracking and vehicle monitoring.' },
+        { icon: '🔧', title: 'Maintenance Schedule', desc: 'Schedule and track vehicle service appointments.' },
+        { icon: '📊', title: 'Performance Reports', desc: 'Reports on vehicle usage and fuel efficiency.' },
+        { icon: '⚠️', title: 'Alerts & Incidents', desc: 'Monitor vehicle alerts and emergency incidents.' },
+      ].map(f => (
+        <div key={f.title} className="feature-card" style={{ opacity: 0.55, cursor: 'default' }}>
+          <div className="feature-icon">{f.icon}</div>
+          <h3>{f.title}</h3>
+          <p>{f.desc}</p>
+          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        </div>
+      ))}
+    </div>
+  </>
+)
+
+const DriverDashboard = () => (
+  <>
+    <div className="section-header" style={{ marginBottom: 14 }}>
+      <h2 className="section-title">My Overview</h2>
+      <div className="section-divider"></div>
+    </div>
+    <div className="stats-grid" style={{ marginBottom: 28 }}>
+      <StatCard icon="🚗" label="Assigned Vehicle" value="1" iconClass="icon-purple" change="VH-2024-087" />
+      <StatCard icon="📋" label="Today's Tasks" value="3" iconClass="icon-blue" change="Pending deliveries" />
+      <StatCard icon="✅" label="Completed" value="12" iconClass="icon-green" change="This week" />
+      <StatCard icon="🟢" label="Status" value="Active" iconClass="icon-green" change="Ready to drive" />
+    </div>
+    <div className="section-header" style={{ marginBottom: 14 }}>
+      <h2 className="section-title">Driver Tools</h2>
+      <div className="section-divider"></div>
+    </div>
+    <div className="features-grid">
+      {[
+        { icon: '🚗', title: 'My Vehicle', desc: 'View status and information about your assigned vehicle.' },
+        { icon: '📋', title: 'Task List', desc: 'View and manage your assigned tasks and schedules.' },
+        { icon: '📍', title: 'Navigation', desc: 'Get directions and optimal routes for deliveries.' },
+        { icon: '⛽', title: 'Fuel Log', desc: 'Record fuel consumption and view usage history.' },
+        { icon: '🔧', title: 'Report Issue', desc: 'Report vehicle issues or maintenance requirements.' },
+        { icon: '📊', title: 'My Performance', desc: 'View driving stats, performance metrics, and history.' },
+      ].map(f => (
+        <div key={f.title} className="feature-card" style={{ opacity: 0.55, cursor: 'default' }}>
+          <div className="feature-icon">{f.icon}</div>
+          <h3>{f.title}</h3>
+          <p>{f.desc}</p>
+          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        </div>
+      ))}
+    </div>
+  </>
+)
+
 const DashboardPage = () => {
-  const { user } = useAuth()
+  const { user, isAdmin } = useAuth()
   const navigate = useNavigate()
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    admins: 0,
-    controllers: 0,
-    drivers: 0,
-    activeUsers: 0,
-    inactiveUsers: 0
-  })
+  const [stats, setStats] = useState({ totalUsers: 0, admins: 0, controllers: 0, drivers: 0, activeUsers: 0, inactiveUsers: 0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadStats = async () => {
       try {
-        if (user?.role === 'ADMIN') {
+        if (isAdmin) {
           const response = await userAPI.getAllUsers()
-          const users = response.data.data
-          
+          const users = response.data.data || []
           setStats({
-            totalUsers: users.length,
-            admins: users.filter(u => u.role === 'ADMIN').length,
-            controllers: users.filter(u => u.role === 'CONTROLLER').length,
-            drivers: users.filter(u => u.role === 'DRIVER').length,
-            activeUsers: users.filter(u => u.accountStatus === 'ACTIVE').length,
-            inactiveUsers: users.filter(u => u.accountStatus === 'INACTIVE').length
+            totalUsers:    users.length,
+            admins:        users.filter(u => u.role === 'ADMIN').length,
+            controllers:   users.filter(u => u.role === 'CONTROLLER').length,
+            drivers:       users.filter(u => u.role === 'DRIVER').length,
+            activeUsers:   users.filter(u => u.accountStatus === 'ACTIVE').length,
+            inactiveUsers: users.filter(u => u.accountStatus === 'INACTIVE').length,
           })
         }
-      } catch (error) {
-        console.error('Error loading stats:', error)
+      } catch (err) {
+        console.error('Error loading stats:', err)
       } finally {
         setLoading(false)
       }
     }
-    
     loadStats()
-  }, [user])
+  }, [isAdmin])
+
+  const roleLabel = { ADMIN: 'Administrator', CONTROLLER: 'Fleet Controller', DRIVER: 'Vehicle Driver' }
+  const roleEmoji = { ADMIN: '🛡️', CONTROLLER: '🎮', DRIVER: '🚗' }
 
   return (
-    <>
-      <Navbar />
-      <div className="container">
-        <div className="dashboard">
-          <div className="dashboard-header">
-            <h1>Welcome, {user?.userName}!</h1>
-            <p>Your role: <span className={`role-badge role-${user?.role?.toLowerCase()}`}>{user?.role}</span></p>
-            <p style={{ marginTop: '10px', color: '#666' }}>
-              {user?.role === 'ADMIN' && 'You have full system access and can manage all users.'}
-              {user?.role === 'CONTROLLER' && 'You can monitor vehicles and manage their status.'}
-              {user?.role === 'DRIVER' && 'You can view and update your assigned vehicles.'}
-            </p>
+    <div className="app-shell">
+      <Sidebar />
+      <div className="main-content">
+        <Topbar title="Dashboard" subtitle="Home / Dashboard" />
+        <div className="page-body">
+
+          {/* Welcome Banner */}
+          <div className="welcome-banner">
+            <div className="welcome-text">
+              <h1>Good day, {user?.userName}! 👋</h1>
+              <p>
+                Logged in as{' '}
+                <strong style={{ color: 'rgba(255,255,255,0.95)' }}>
+                  {roleLabel[user?.role] || user?.role}
+                </strong>
+                {' '}· Here's your personalized overview
+              </p>
+            </div>
+            <div className="welcome-icon">{roleEmoji[user?.role]}</div>
           </div>
 
-          {user?.role === 'ADMIN' && (
-            <>
-              {loading ? (
-                <div className="loading">Loading statistics...</div>
-              ) : (
-                <>
-                  <h2 style={{ marginBottom: '20px', color: '#333' }}>System Overview</h2>
-                  <div className="stats-grid">
-                    <div className="stat-card">
-                      <h3>Total Users</h3>
-                      <div className="stat-value">{stats.totalUsers}</div>
-                      <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Registered in system</p>
-                    </div>
-                    <div className="stat-card">
-                      <h3>Admins</h3>
-                      <div className="stat-value">{stats.admins}</div>
-                      <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>System administrators</p>
-                    </div>
-                    <div className="stat-card">
-                      <h3>Controllers</h3>
-                      <div className="stat-value">{stats.controllers}</div>
-                      <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Vehicle controllers</p>
-                    </div>
-                    <div className="stat-card">
-                      <h3>Drivers</h3>
-                      <div className="stat-value">{stats.drivers}</div>
-                      <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Vehicle drivers</p>
-                    </div>
-                    <div className="stat-card">
-                      <h3>Active Users</h3>
-                      <div className="stat-value" style={{ color: '#4caf50' }}>{stats.activeUsers}</div>
-                      <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Currently active</p>
-                    </div>
-                    <div className="stat-card">
-                      <h3>Inactive Users</h3>
-                      <div className="stat-value" style={{ color: '#f44336' }}>{stats.inactiveUsers}</div>
-                      <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Temporarily disabled</p>
-                    </div>
-                  </div>
-
-                  <h2 style={{ margin: '30px 0 20px', color: '#333' }}>Admin Capabilities</h2>
-                  <div className="features-grid">
-                    <div className="feature-card" onClick={() => navigate('/users')}>
-                      <div className="feature-icon">👥</div>
-                      <h3>User Management</h3>
-                      <p>Create, view, update, and delete users. Manage roles and permissions.</p>
-                      <button className="btn btn-primary btn-sm" style={{ marginTop: '15px' }}>
-                        Manage Users
-                      </button>
-                    </div>
-                    <div className="feature-card">
-                      <div className="feature-icon">🔐</div>
-                      <h3>Access Control</h3>
-                      <p>Configure role-based permissions and access levels for different user types.</p>
-                      <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                        Configure Access
-                      </button>
-                    </div>
-                    <div className="feature-card">
-                      <div className="feature-icon">📊</div>
-                      <h3>System Reports</h3>
-                      <p>Generate and view detailed reports on system usage and user activities.</p>
-                      <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                        View Reports
-                      </button>
-                    </div>
-                    <div className="feature-card">
-                      <div className="feature-icon">⚙️</div>
-                      <h3>System Settings</h3>
-                      <p>Configure system-wide settings, security policies, and application parameters.</p>
-                      <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                        Settings
-                      </button>
-                    </div>
-                    <div className="feature-card">
-                      <div className="feature-icon">🔔</div>
-                      <h3>Notifications</h3>
-                      <p>Manage system notifications and alerts for all users and events.</p>
-                      <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                        Manage Alerts
-                      </button>
-                    </div>
-                    <div className="feature-card">
-                      <div className="feature-icon">📝</div>
-                      <h3>Audit Logs</h3>
-                      <p>View and analyze system audit logs and user activity history.</p>
-                      <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                        View Logs
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </>
-          )}
-
-          {user?.role === 'CONTROLLER' && (
-            <>
-              <h2 style={{ marginBottom: '20px', color: '#333' }}>Controller Dashboard</h2>
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <h3>Total Vehicles</h3>
-                  <div className="stat-value">24</div>
-                  <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Under your control</p>
-                </div>
-                <div className="stat-card">
-                  <h3>Active Vehicles</h3>
-                  <div className="stat-value" style={{ color: '#4caf50' }}>18</div>
-                  <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Currently in use</p>
-                </div>
-                <div className="stat-card">
-                  <h3>Maintenance</h3>
-                  <div className="stat-value" style={{ color: '#ff9800' }}>4</div>
-                  <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>In maintenance</p>
-                </div>
-                <div className="stat-card">
-                  <h3>Available</h3>
-                  <div className="stat-value" style={{ color: '#2196f3' }}>2</div>
-                  <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Ready to assign</p>
-                </div>
-              </div>
-
-              <h2 style={{ margin: '30px 0 20px', color: '#333' }}>Controller Capabilities</h2>
-              <div className="features-grid">
-                <div className="feature-card">
-                  <div className="feature-icon">🚗</div>
-                  <h3>Vehicle Management</h3>
-                  <p>Monitor, track, and manage all vehicles in the fleet.</p>
-                  <button className="btn btn-primary btn-sm" style={{ marginTop: '15px' }}>
-                    Manage Vehicles
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">👨‍✈️</div>
-                  <h3>Driver Assignment</h3>
-                  <p>Assign and manage drivers for different vehicles and routes.</p>
-                  <button className="btn btn-primary btn-sm" style={{ marginTop: '15px' }}>
-                    Assign Drivers
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">📍</div>
-                  <h3>Live Tracking</h3>
-                  <p>Real-time GPS tracking and location monitoring of all vehicles.</p>
-                  <button className="btn btn-primary btn-sm" style={{ marginTop: '15px' }}>
-                    Track Vehicles
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">🔧</div>
-                  <h3>Maintenance Schedule</h3>
-                  <p>Schedule and track vehicle maintenance and service appointments.</p>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                    View Schedule
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">📊</div>
-                  <h3>Performance Reports</h3>
-                  <p>Generate reports on vehicle usage, fuel consumption, and efficiency.</p>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                    View Reports
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">⚠️</div>
-                  <h3>Alerts & Incidents</h3>
-                  <p>Monitor and respond to vehicle alerts, incidents, and emergencies.</p>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                    View Alerts
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-
-          {user?.role === 'DRIVER' && (
-            <>
-              <h2 style={{ marginBottom: '20px', color: '#333' }}>Driver Dashboard</h2>
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <h3>Assigned Vehicle</h3>
-                  <div className="stat-value">1</div>
-                  <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Vehicle #VH-2024-087</p>
-                </div>
-                <div className="stat-card">
-                  <h3>Today's Tasks</h3>
-                  <div className="stat-value" style={{ color: '#2196f3' }}>3</div>
-                  <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Pending deliveries</p>
-                </div>
-                <div className="stat-card">
-                  <h3>Completed</h3>
-                  <div className="stat-value" style={{ color: '#4caf50' }}>12</div>
-                  <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>This week</p>
-                </div>
-                <div className="stat-card">
-                  <h3>Vehicle Status</h3>
-                  <div className="stat-value" style={{ color: '#4caf50', fontSize: '20px' }}>Active</div>
-                  <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>Ready to drive</p>
-                </div>
-              </div>
-
-              <h2 style={{ margin: '30px 0 20px', color: '#333' }}>Driver Capabilities</h2>
-              <div className="features-grid">
-                <div className="feature-card">
-                  <div className="feature-icon">🚗</div>
-                  <h3>My Vehicle</h3>
-                  <p>View details, status, and information about your assigned vehicle.</p>
-                  <button className="btn btn-primary btn-sm" style={{ marginTop: '15px' }}>
-                    View Vehicle
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">📋</div>
-                  <h3>Task List</h3>
-                  <p>View and manage your assigned tasks and delivery schedules.</p>
-                  <button className="btn btn-primary btn-sm" style={{ marginTop: '15px' }}>
-                    View Tasks
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">📍</div>
-                  <h3>Navigation</h3>
-                  <p>Get directions and optimal routes for your deliveries.</p>
-                  <button className="btn btn-primary btn-sm" style={{ marginTop: '15px' }}>
-                    Get Directions
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">⛽</div>
-                  <h3>Fuel Log</h3>
-                  <p>Record fuel consumption and view fuel usage history.</p>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                    Log Fuel
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">🔧</div>
-                  <h3>Report Issue</h3>
-                  <p>Report vehicle issues, defects, or maintenance requirements.</p>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                    Report Issue
-                  </button>
-                </div>
-                <div className="feature-card">
-                  <div className="feature-icon">📊</div>
-                  <h3>My Performance</h3>
-                  <p>View your driving statistics, performance metrics, and history.</p>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '15px' }}>
-                    View Stats
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
+          {/* Role-based content */}
+          {user?.role === 'ADMIN'      && <AdminDashboard stats={stats} loading={loading} navigate={navigate} />}
+          {user?.role === 'CONTROLLER' && <ControllerDashboard navigate={navigate} />}
+          {user?.role === 'DRIVER'     && <DriverDashboard />}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

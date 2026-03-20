@@ -1,15 +1,15 @@
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-const Topbar = ({ title, subtitle }) => {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
+const roleBadgeStyle = {
+  ADMIN:      { background: '#ede9fe', color: '#6d28d9' },
+  CONTROLLER: { background: '#dbeafe', color: '#1d4ed8' },
+  DRIVER:     { background: '#d1fae5', color: '#065f46' },
+}
 
-  const roleBadgeClass = {
-    ADMIN: 'badge badge-admin',
-    CONTROLLER: 'badge badge-controller',
-    DRIVER: 'badge badge-driver',
-  }[user?.role] || 'badge'
+const Topbar = ({ title, subtitle }) => {
+  const { user } = useAuth()
+  const badgeStyle = roleBadgeStyle[user?.role] || { background: '#f3f4f6', color: '#374151' }
 
   return (
     <header className="topbar">
@@ -21,17 +21,22 @@ const Topbar = ({ title, subtitle }) => {
       </div>
 
       <div className="topbar-right">
-        <span className={roleBadgeClass}>{user?.role}</span>
-        <div className="topbar-user" onClick={() => navigate('/profile')}>
-          <img
-            src={user?.profilePicture}
-            alt={user?.userName}
-            className="topbar-avatar"
-          />
-          <div>
-            <div className="topbar-name">{user?.userName}</div>
+        <span style={{
+          padding: '4px 12px', borderRadius: 999, fontSize: '0.72rem', fontWeight: 700,
+          textTransform: 'uppercase', letterSpacing: '0.05em',
+          ...badgeStyle,
+        }}>
+          {user?.role}
+        </span>
+
+        <Link to="/profile">
+          <div className="topbar-user">
+            <img src={user?.profilePicture} alt={user?.userName} className="topbar-avatar" />
+            <div>
+              <div className="topbar-name">{user?.userName}</div>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
     </header>
   )

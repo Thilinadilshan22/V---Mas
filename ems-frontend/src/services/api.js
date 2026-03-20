@@ -1,51 +1,63 @@
-import axios from "axios";
+import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
-});
+})
 
+// Attach JWT token to every request
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token')
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`
     }
-    return config;
+    return config
   },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+  (error) => Promise.reject(error)
+)
 
+// Global 401/403 handler — but NOT for the login/register endpoints
+// (those 401s should be handled by the calling code to show error messages)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 403 || error.response?.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
+    const url = error.config?.url || ''
+    const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register')
+
+    if (!isAuthEndpoint && (error.response?.status === 401 || error.response?.status === 403)) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      window.location.href = '/login'
     }
-    return Promise.reject(error);
-  },
-);
+    return Promise.reject(error)
+  }
+)
 
 export const authAPI = {
-  register: (data) => api.post("/auth/register", data),
-  login: (data) => api.post("/auth/login", data),
-  logout: () => api.post("/auth/logout"),
-};
+  register: (data) => api.post('/auth/register', data),
+  login:    (data) => api.post('/auth/login', data),
+  logout:   ()     => api.post('/auth/logout'),
+}
 
 export const userAPI = {
-  getAllUsers: () => api.get("/users"),
-  getUserById: (id) => api.get(`/users/${id}`),
-  createUser: (data) => api.post("/users", data),
-  updateUser: (id, data) => api.put(`/users/${id}`, data),
-  deleteUser: (id) => api.delete(`/users/${id}`),
-};
+  getAllUsers:  ()         => api.get('/users'),
+  getUserById: (id)       => api.get(`/users/${id}`),
+  createUser:  (data)     => api.post('/users', data),
+  updateUser:  (id, data) => api.put(`/users/${id}`, data),
+  deleteUser:  (id)       => api.delete(`/users/${id}`),
+}
 
-export default api;
+export const employeeAPI = {
+  getAllEmployees:  ()         => api.get('/employees'),
+  getEmployeeById: (id)       => api.get(`/employees/${id}`),
+  createEmployee:  (data)     => api.post('/employees', data),
+  updateEmployee:  (id, data) => api.put(`/employees/${id}`, data),
+  deleteEmployee:  (id)       => api.delete(`/employees/${id}`),
+}
+
+export default api
