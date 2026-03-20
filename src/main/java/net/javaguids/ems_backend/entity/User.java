@@ -37,6 +37,6 @@ public class User {
     @Column(nullable = false)
     private AccountStatus accountStatus = AccountStatus.ACTIVE;
     
-    @Column
+    @Column(columnDefinition = "LONGTEXT")
     private String profilePicture;
 }
