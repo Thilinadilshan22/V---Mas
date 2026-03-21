@@ -42,41 +42,41 @@ const AdminDashboard = ({ stats, loading, navigate }) => {
         <div className="section-divider"></div>
       </div>
       <div className="features-grid">
-        <div className="feature-card" onClick={() => navigate('/users')}>
-          <div className="feature-icon">👥</div>
-          <h3>User Management</h3>
-          <p>Create, view, edit, and delete users. Manage roles and account status.</p>
+        <div className="feature-card" onClick={() => navigate('/vehicles')}>
+          <div className="feature-icon">🚗</div>
+          <h3>Vehicles</h3>
+          <p>Manage and monitor all fleet vehicles, statuses, assignments and details.</p>
           <button className="btn btn-primary btn-sm" style={{ marginTop: 14 }}>Open →</button>
         </div>
-        <div className="feature-card" onClick={() => navigate('/profile')}>
-          <div className="feature-icon">👤</div>
-          <h3>My Profile</h3>
-          <p>View and manage your personal profile, role information, and settings.</p>
-          <button className="btn btn-secondary btn-sm" style={{ marginTop: 14 }}>View →</button>
+        <div className="feature-card" onClick={() => navigate('/service')}>
+          <div className="feature-icon">🔧</div>
+          <h3>Service</h3>
+          <p>Schedule and track vehicle service appointments and maintenance records.</p>
+          <button className="btn btn-primary btn-sm" style={{ marginTop: 14 }}>Open →</button>
         </div>
-        <div className="feature-card" style={{ opacity: 0.5, cursor: 'default' }}>
-          <div className="feature-icon">📊</div>
-          <h3>System Reports</h3>
-          <p>Generate detailed reports on system usage, user activities, and performance.</p>
-          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        <div className="feature-card" onClick={() => navigate('/users')}>
+          <div className="feature-icon">👥</div>
+          <h3>Users</h3>
+          <p>Create, view, edit, and delete users. Manage roles and account status.</p>
+          <button className="btn btn-secondary btn-sm" style={{ marginTop: 14 }}>Open →</button>
         </div>
-        <div className="feature-card" style={{ opacity: 0.5, cursor: 'default' }}>
-          <div className="feature-icon">📝</div>
-          <h3>Audit Logs</h3>
-          <p>View and analyze system audit logs, activity history, and security events.</p>
-          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        <div className="feature-card" onClick={() => navigate('/fuel-analysis')}>
+          <div className="feature-icon">⛽</div>
+          <h3>Fuel Analysis</h3>
+          <p>Monitor fuel consumption trends and cost analysis across the entire fleet.</p>
+          <button className="btn btn-primary btn-sm" style={{ marginTop: 14 }}>Open →</button>
         </div>
-        <div className="feature-card" style={{ opacity: 0.5, cursor: 'default' }}>
-          <div className="feature-icon">⚙️</div>
-          <h3>System Settings</h3>
-          <p>Configure system-wide settings, security policies, and app parameters.</p>
-          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        <div className="feature-card" onClick={() => navigate('/location')}>
+          <div className="feature-icon">📍</div>
+          <h3>Location</h3>
+          <p>Real-time GPS tracking for all fleet vehicles. Monitor routes and positions.</p>
+          <button className="btn btn-primary btn-sm" style={{ marginTop: 14 }}>Open →</button>
         </div>
-        <div className="feature-card" style={{ opacity: 0.5, cursor: 'default' }}>
-          <div className="feature-icon">🔔</div>
-          <h3>Notifications</h3>
-          <p>Manage system-wide notifications, alerts, and announcement broadcasts.</p>
-          <span className="badge badge-warning" style={{ marginTop: 14, display: 'inline-flex' }}>Coming Soon</span>
+        <div className="feature-card" onClick={() => navigate('/reports')}>
+          <div className="feature-icon">📈</div>
+          <h3>Reports</h3>
+          <p>Generate comprehensive reports on fleet performance and system activity.</p>
+          <button className="btn btn-secondary btn-sm" style={{ marginTop: 14 }}>Open →</button>
         </div>
       </div>
     </>
