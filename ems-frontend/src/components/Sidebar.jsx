@@ -3,9 +3,13 @@ import { useAuth } from '../context/AuthContext'
 
 const navItems = {
   ADMIN: [
-    { label: 'Dashboard', icon: '📊', to: '/dashboard' },
-    { label: 'User Management', icon: '👥', to: '/users' },
-    { label: 'My Profile', icon: '👤', to: '/profile' },
+    { label: 'Dashboard',     icon: '📊', to: '/dashboard'     },
+    { label: 'Vehicles',      icon: '🚗', to: '/vehicles'      },
+    { label: 'Service',       icon: '🔧', to: '/service'       },
+    { label: 'Users',         icon: '👥', to: '/users'         },
+    { label: 'Fuel Analysis', icon: '⛽', to: '/fuel-analysis' },
+    { label: 'Location',      icon: '📍', to: '/location'      },
+    { label: 'Reports',       icon: '📈', to: '/reports'       },
   ],
   CONTROLLER: [
     { label: 'Dashboard', icon: '📊', to: '/dashboard' },
