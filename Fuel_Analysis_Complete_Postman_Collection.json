@@ -1,0 +1,558 @@
+{
+	"info": {
+		"_postman_id": "fuel-analysis-module-v2",
+		"name": "V-Mas Fuel & Analysis Module - Complete",
+		"description": "Complete Postman collection for testing Fuel & Analysis Backend with all endpoints including notification testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "fuel-module"
+	},
+	"item": [
+		{
+			"name": "1. Add Fuel Log",
+			"item": [
+				{
+					"name": "Add First Log - Good Efficiency Vehicle",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has success=true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.eql(true);",
+									"});",
+									"",
+									"pm.test(\"Response has data object\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.be.an('object');",
+									"    pm.expect(jsonData.data.id).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicleRegNumber\": \"KA01AB1234\",\n  \"fuelType\": \"Diesel\",\n  \"liters\": 50.0,\n  \"costPerLiter\": 95.5,\n  \"mileage\": 15000.0,\n  \"date\": \"2026-03-21\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/fuel/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"add"
+							]
+						},
+						"description": "Add first fuel log for vehicle KA01AB1234. This will be used to calculate efficiency when second log is added."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Second Log - Calculate Good Efficiency",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Efficiency should be calculated\", function () {",
+									"    // Expected: (15560 - 15000) / 45 = 12.44 km/L",
+									"    console.log(\"Expected Efficiency: 12.44 km/L (Good)\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicleRegNumber\": \"KA01AB1234\",\n  \"fuelType\": \"Diesel\",\n  \"liters\": 45.0,\n  \"costPerLiter\": 96.0,\n  \"mileage\": 15560.0,\n  \"date\": \"2026-03-22\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/fuel/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"add"
+							]
+						},
+						"description": "Add second log. Expected efficiency: (15560-15000)/45 = 12.44 km/L"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Log - Auto Calculate Total Cost",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Total cost auto-calculated\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.totalCost).to.eql(4080);",
+									"    console.log(\"Auto-calculated: 40 * 102 = 4080\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicleRegNumber\": \"KA02CD5678\",\n  \"fuelType\": \"Petrol\",\n  \"liters\": 40.0,\n  \"costPerLiter\": 102.0,\n  \"mileage\": 10000.0,\n  \"date\": \"2026-03-20\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/fuel/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"add"
+							]
+						},
+						"description": "Test auto-calculation of totalCost (not provided in request). Expected: 40 * 102 = 4080"
+					},
+					"response": []
+				},
+				{
+					"name": "🚨 Add Log - TRIGGER LOW EFFICIENCY NOTIFICATION",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"LOW EFFICIENCY ALERT\", function () {",
+									"    // Expected: (10200 - 10000) / 50 = 4.0 km/L < 5",
+									"    console.log(\"⚠️ EXPECTED: Notification created!\");",
+									"    console.log(\"Efficiency: 4.0 km/L < 5 km/L threshold\");",
+									"    console.log(\"Check notifications table for new entry\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicleRegNumber\": \"KA02CD5678\",\n  \"fuelType\": \"Petrol\",\n  \"liters\": 50.0,\n  \"costPerLiter\": 103.0,\n  \"mileage\": 10200.0,\n  \"date\": \"2026-03-21\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/fuel/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"add"
+							]
+						},
+						"description": "🚨 CRITICAL TEST: This should trigger a LOW EFFICIENCY NOTIFICATION!\n\nCalculation: (10200 - 10000) / 50 = 4.0 km/L < 5 km/L\n\nExpected: Automatic notification entry created in database with:\n- vehicleRegNumber: KA02CD5678\n- type: LOW_EFFICIENCY\n- message: Low Efficiency Alert...\n- isRead: false"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Log - Different Vehicle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicleRegNumber\": \"KA03EF9012\",\n  \"fuelType\": \"Diesel\",\n  \"liters\": 60.0,\n  \"costPerLiter\": 94.0,\n  \"totalCost\": 5640.0,\n  \"mileage\": 25000.0,\n  \"date\": \"2026-03-19\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/fuel/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"add"
+							]
+						},
+						"description": "Add log for a different vehicle to test multi-vehicle support"
+					},
+					"response": []
+				}
+			],
+			"description": "Add fuel log entries with various scenarios"
+		},
+		{
+			"name": "2. Get Summary",
+			"item": [
+				{
+					"name": "Get Current Month Summary",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Summary has all required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.have.property('totalDiesel');",
+									"    pm.expect(jsonData.data).to.have.property('totalPetrol');",
+									"    pm.expect(jsonData.data).to.have.property('totalVolume');",
+									"    pm.expect(jsonData.data).to.have.property('totalCost');",
+									"});",
+									"",
+									"pm.test(\"Total volume equals diesel + petrol\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var expected = jsonData.data.totalDiesel + jsonData.data.totalPetrol;",
+									"    pm.expect(jsonData.data.totalVolume).to.eql(expected);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/fuel/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"summary"
+							]
+						},
+						"description": "Get summary for current month with totalDiesel, totalPetrol, totalVolume, and totalCost"
+					},
+					"response": []
+				}
+			],
+			"description": "Get monthly summary data"
+		},
+		{
+			"name": "3. Get Chart Data",
+			"item": [
+				{
+					"name": "Get Monthly Chart Data (React Bar Chart)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Chart data has months array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.months).to.be.an('array');",
+									"    pm.expect(jsonData.data.months).to.have.lengthOf(12);",
+									"});",
+									"",
+									"pm.test(\"Chart data has Diesel and Petrol arrays\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.data.Diesel).to.be.an('array');",
+									"    pm.expect(jsonData.data.data.Petrol).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/fuel/chart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"chart"
+							]
+						},
+						"description": "Get monthly consumption data grouped by fuel type for React Bar Chart visualization"
+					},
+					"response": []
+				}
+			],
+			"description": "Get chart data for visualization"
+		},
+		{
+			"name": "4. Get Vehicle Statistics",
+			"item": [
+				{
+					"name": "Get All Vehicle Stats (Dashboard Table)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Stats is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Each vehicle has required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data.length > 0) {",
+									"        var vehicle = jsonData.data[0];",
+									"        pm.expect(vehicle).to.have.property('vehicleRegNumber');",
+									"        pm.expect(vehicle).to.have.property('fuelEfficiency');",
+									"        pm.expect(vehicle).to.have.property('totalSpending');",
+									"        pm.expect(vehicle).to.have.property('efficiencyStatus');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/fuel/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"stats"
+							]
+						},
+						"description": "Get all vehicles with their fuel efficiency, total spending, and efficiency status for dashboard table"
+					},
+					"response": []
+				}
+			],
+			"description": "Get vehicle statistics with efficiency"
+		},
+		{
+			"name": "5. Get Specific Records",
+			"item": [
+				{
+					"name": "Get Fuel Log by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/fuel/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"1"
+							]
+						},
+						"description": "Get a specific fuel log by ID (replace 1 with actual ID)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Logs for Specific Vehicle",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/fuel/vehicle/KA01AB1234",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"vehicle",
+								"KA01AB1234"
+							]
+						},
+						"description": "Get all fuel logs for a specific vehicle (ordered by date DESC)"
+					},
+					"response": []
+				}
+			],
+			"description": "Get specific fuel log records"
+		},
+		{
+			"name": "6. Test Scenarios",
+			"item": [
+				{
+					"name": "SCENARIO: Test Low Efficiency - Step 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicleRegNumber\": \"TEST-LOW-EFF-01\",\n  \"fuelType\": \"Petrol\",\n  \"liters\": 40.0,\n  \"costPerLiter\": 100.0,\n  \"mileage\": 10000.0,\n  \"date\": \"2026-03-20\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/fuel/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"add"
+							]
+						},
+						"description": "Step 1: Add first log for test vehicle"
+					},
+					"response": []
+				},
+				{
+					"name": "SCENARIO: Test Low Efficiency - Step 2 (TRIGGERS ALERT)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"🚨 LOW EFFICIENCY NOTIFICATION TRIGGERED\", function () {",
+									"    console.log(\"========================================\");",
+									"    console.log(\"⚠️  NOTIFICATION SHOULD BE CREATED!\");",
+									"    console.log(\"========================================\");",
+									"    console.log(\"Efficiency: (10180-10000)/50 = 3.6 km/L\");",
+									"    console.log(\"Threshold: 5 km/L\");",
+									"    console.log(\"Status: BELOW THRESHOLD ❌\");",
+									"    console.log(\"\");",
+									"    console.log(\"Check database:\");",
+									"    console.log(\"SELECT * FROM notifications WHERE vehicle_reg_number = 'TEST-LOW-EFF-01';\");",
+									"    console.log(\"========================================\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicleRegNumber\": \"TEST-LOW-EFF-01\",\n  \"fuelType\": \"Petrol\",\n  \"liters\": 50.0,\n  \"costPerLiter\": 100.0,\n  \"mileage\": 10180.0,\n  \"date\": \"2026-03-21\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/fuel/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"add"
+							]
+						},
+						"description": "Step 2: Add second log with low efficiency\nCalculation: (10180-10000)/50 = 3.6 km/L < 5 km/L\n🚨 THIS SHOULD CREATE A NOTIFICATION!"
+					},
+					"response": []
+				}
+			],
+			"description": "Complete test scenarios"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

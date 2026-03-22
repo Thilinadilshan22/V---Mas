@@ -3,7 +3,7 @@ package net.javaguids.ems_backend.service.impl;
 import lombok.AllArgsConstructor;
 import net.javaguids.ems_backend.dto.EmployeeDto;
 import net.javaguids.ems_backend.entity.Employee;
-import net.javaguids.ems_backend.exception.ResourceNotFoundExeption;
+import net.javaguids.ems_backend.exception.ResourceNotFoundException;
 import net.javaguids.ems_backend.mapper.EmployeeMapper;
 import net.javaguids.ems_backend.repository.EmployeeRepository;
 import net.javaguids.ems_backend.service.EmployeeService;
@@ -35,7 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto getEmployeeById(Long employeeId) {
         Long requiredEmployeeId = Objects.requireNonNull(employeeId);
         Employee employee = employeeRepository.findById(requiredEmployeeId).orElseThrow(
-                () -> new ResourceNotFoundExeption("Employee not found by Given ID : " + employeeId));
+                () -> new ResourceNotFoundException("Employee not found by Given ID : " + employeeId));
         return EmployeeMapper.mapToEmployeeDto(employee);
     }
 
@@ -50,7 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
         Long requiredEmployeeId = Objects.requireNonNull(employeeId);
         Employee employee = employeeRepository.findById(requiredEmployeeId).orElseThrow(
-                () -> new ResourceNotFoundExeption("Employee not found by Given ID : " + employeeId));
+                () -> new ResourceNotFoundException("Employee not found by Given ID : " + employeeId));
 
         employee.setFirstName(updatedEmployee.getFirstName());
         employee.setLastName(updatedEmployee.getLastName());
@@ -64,7 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(Long employeeId) {
         Long requiredEmployeeId = Objects.requireNonNull(employeeId);
         Employee employee = employeeRepository.findById(requiredEmployeeId).orElseThrow(
-                () -> new ResourceNotFoundExeption("Employee not found by Given ID : " + employeeId));
+                () -> new ResourceNotFoundException("Employee not found by Given ID : " + employeeId));
 
         employeeRepository.delete(Objects.requireNonNull(employee));
     }
