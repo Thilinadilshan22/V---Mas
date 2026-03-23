@@ -23,7 +23,7 @@ const navItems = {
     { label: 'Dashboard', icon: '📊', to: '/dashboard' },
     { label: 'My Vehicle', icon: '🚗', to: '/vehicle', disabled: true },
     { label: 'Task List', icon: '📋', to: '/tasks', disabled: true },
-    { label: 'Fuel Log', icon: '⛽', to: '/fuel', disabled: true },
+    { label: 'Fuel Log', icon: '⛽', to: '/fuel-log' },
     { label: 'My Profile', icon: '👤', to: '/profile' },
   ],
 }
