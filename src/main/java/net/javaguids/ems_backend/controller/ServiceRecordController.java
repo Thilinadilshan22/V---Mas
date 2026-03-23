@@ -17,12 +17,13 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/services")
-@PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER')")
+@PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'DRIVER')")
 public class ServiceRecordController {
 
     private final ServiceRecordService serviceRecordService;
 
     // POST /api/services — Add new service record
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER')")
     @PostMapping
     public ResponseEntity<ApiResponse<ServiceRecordDto>> createServiceRecord(
             @RequestBody ServiceRecordDto serviceRecordDto) {
@@ -45,6 +46,7 @@ public class ServiceRecordController {
     }
 
     // PUT /api/services/{id} — Update service record
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ServiceRecordDto>> updateServiceRecord(
             @PathVariable Long id,
@@ -54,6 +56,7 @@ public class ServiceRecordController {
     }
 
     // DELETE /api/services/{id} — Delete service record
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteServiceRecord(@PathVariable Long id) {
         serviceRecordService.deleteServiceRecord(id);
