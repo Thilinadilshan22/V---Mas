@@ -16,6 +16,7 @@ const navItems = {
     { label: 'Vehicles', icon: '🚗', to: '/vehicles', disabled: true },
     { label: 'Driver Assignment', icon: '👨‍✈️', to: '/assignments', disabled: true },
     { label: 'Live Tracking', icon: '📍', to: '/tracking', disabled: true },
+    { label: 'Fuel Management', icon: '⛽', to: '/fuel-management' },
     { label: 'Maintenance', icon: '🔧', to: '/maintenance', disabled: true },
     { label: 'My Profile', icon: '👤', to: '/profile' },
   ],
