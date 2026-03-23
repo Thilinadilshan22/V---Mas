@@ -60,6 +60,10 @@ export const employeeAPI = {
   deleteEmployee:  (id)       => api.delete(`/employees/${id}`),
 }
 
+export const vehicleAPI = {
+  getAllVehicles: () => api.get('/vehicles'),
+}
+
 export const fuelAPI = {
   addFuelLog:           (data)           => api.post('/fuel/add', data),
   getFuelLogById:       (id)             => api.get(`/fuel/${id}`),
@@ -67,6 +71,17 @@ export const fuelAPI = {
   getSummary:           ()               => api.get('/fuel/summary'),
   getChartData:         ()               => api.get('/fuel/chart'),
   getVehicleStats:      ()               => api.get('/fuel/stats'),
+}
+
+export const serviceAPI = {
+  getAllServices:       ()               => api.get('/services'),
+  getServiceById:       (id)             => api.get(`/services/${id}`),
+  createService:        (data)           => api.post('/services', data),
+  updateService:        (id, data)       => api.put(`/services/${id}`, data),
+  deleteService:        (id)             => api.delete(`/services/${id}`),
+  getServiceStats:      ()               => api.get('/services/stats'),
+  getUpcomingServices:  ()               => api.get('/services/upcoming'),
+  getRecentServices:    ()               => api.get('/services/recent'),
 }
 
 export default api
