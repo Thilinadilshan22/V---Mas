@@ -60,4 +60,13 @@ export const employeeAPI = {
   deleteEmployee:  (id)       => api.delete(`/employees/${id}`),
 }
 
+export const fuelAPI = {
+  addFuelLog:           (data)           => api.post('/fuel/add', data),
+  getFuelLogById:       (id)             => api.get(`/fuel/${id}`),
+  getLogsByVehicle:     (vehicleRegNumber) => api.get(`/fuel/vehicle/${vehicleRegNumber}`),
+  getSummary:           ()               => api.get('/fuel/summary'),
+  getChartData:         ()               => api.get('/fuel/chart'),
+  getVehicleStats:      ()               => api.get('/fuel/stats'),
+}
+
 export default api
