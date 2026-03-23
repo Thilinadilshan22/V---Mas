@@ -10,6 +10,7 @@ import VehiclesPage from './pages/VehiclesPage'
 import ServicePage from './pages/ServicePage'
 import FuelAnalysisPage from './pages/FuelAnalysisPage'
 import FuelLogPage from './pages/FuelLogPage'
+import FuelManagementPage from './pages/FuelManagementPage'
 import LocationPage from './pages/LocationPage'
 import ReportsPage from './pages/ReportsPage'
 
@@ -27,6 +28,7 @@ function App() {
           <Route path="/service"      element={<PrivateRoute><ServicePage /></PrivateRoute>} />
           <Route path="/fuel-analysis" element={<PrivateRoute><FuelAnalysisPage /></PrivateRoute>} />
           <Route path="/fuel-log"     element={<PrivateRoute><FuelLogPage /></PrivateRoute>} />
+          <Route path="/fuel-management" element={<PrivateRoute><FuelManagementPage /></PrivateRoute>} />
           <Route path="/location"     element={<PrivateRoute><LocationPage /></PrivateRoute>} />
           <Route path="/reports"      element={<PrivateRoute><ReportsPage /></PrivateRoute>} />
           <Route path="/"             element={<Navigate to="/login" replace />} />
