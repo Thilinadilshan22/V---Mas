@@ -3,7 +3,7 @@ package net.javaguids.ems_backend.service.impl;
 import lombok.AllArgsConstructor;
 import net.javaguids.ems_backend.dto.VehicleDto;
 import net.javaguids.ems_backend.entity.Vehicle;
-import net.javaguids.ems_backend.exception.ResourceNotFoundExeption;
+import net.javaguids.ems_backend.exception.ResourceNotFoundException;
 import net.javaguids.ems_backend.mapper.VehicleMapper;
 import net.javaguids.ems_backend.repository.VehicleRepository;
 import net.javaguids.ems_backend.service.VehicleService;
@@ -32,7 +32,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleDto getVehicleById(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundExeption("Vehicle not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
         return VehicleMapper.mapToVehicleDto(vehicle);
     }
 
@@ -47,7 +47,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleDto updateVehicle(Long id, VehicleDto vehicleDto) {
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundExeption("Vehicle not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
 
         // Check if registration number is being changed to one that already exists
         if (!vehicle.getRegistrationNo().equals(vehicleDto.getRegistrationNo())
@@ -70,7 +70,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public void deleteVehicle(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundExeption("Vehicle not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
         vehicleRepository.delete(vehicle);
     }
 }

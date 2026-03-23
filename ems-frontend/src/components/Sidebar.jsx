@@ -17,7 +17,7 @@ const navItems = {
     { label: 'Driver Assignment', icon: '👨‍✈️', to: '/assignments', disabled: true },
     { label: 'Live Tracking', icon: '📍', to: '/tracking', disabled: true },
     { label: 'Fuel Management', icon: '⛽', to: '/fuel-management' },
-    { label: 'Maintenance', icon: '🔧', to: '/maintenance', disabled: true },
+    { label: 'Service', icon: '🔧', to: '/service' },
     { label: 'My Profile', icon: '👤', to: '/profile' },
   ],
   DRIVER: [
@@ -25,6 +25,7 @@ const navItems = {
     { label: 'My Vehicle', icon: '🚗', to: '/vehicle', disabled: true },
     { label: 'Task List', icon: '📋', to: '/tasks', disabled: true },
     { label: 'Fuel Log', icon: '⛽', to: '/fuel-log' },
+    { label: 'Service History', icon: '🔧', to: '/service' },
     { label: 'My Profile', icon: '👤', to: '/profile' },
   ],
 }

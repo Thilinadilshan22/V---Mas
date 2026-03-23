@@ -7,7 +7,7 @@ import net.javaguids.ems_backend.dto.ServiceRecordDto;
 import net.javaguids.ems_backend.entity.ServiceRecord;
 import net.javaguids.ems_backend.entity.Vehicle;
 import net.javaguids.ems_backend.enums.ServiceType;
-import net.javaguids.ems_backend.exception.ResourceNotFoundExeption;
+import net.javaguids.ems_backend.exception.ResourceNotFoundException;
 import net.javaguids.ems_backend.mapper.ServiceRecordMapper;
 import net.javaguids.ems_backend.repository.ServiceRecordRepository;
 import net.javaguids.ems_backend.repository.VehicleRepository;
@@ -31,7 +31,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
         validateServiceTypeDetail(dto.getServiceType(), dto.getServiceTypeDetail());
 
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
-                .orElseThrow(() -> new ResourceNotFoundExeption(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Vehicle not found with id: " + dto.getVehicleId()));
 
         ServiceRecord record = ServiceRecordMapper.mapToServiceRecord(dto, vehicle);
@@ -42,7 +42,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
     @Override
     public ServiceRecordDto getServiceRecordById(Long id) {
         ServiceRecord record = serviceRecordRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundExeption(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Service record not found with id: " + id));
         return ServiceRecordMapper.mapToServiceRecordDto(record);
     }
@@ -58,13 +58,13 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
     @Override
     public ServiceRecordDto updateServiceRecord(Long id, ServiceRecordDto dto) {
         ServiceRecord record = serviceRecordRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundExeption(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Service record not found with id: " + id));
 
         validateServiceTypeDetail(dto.getServiceType(), dto.getServiceTypeDetail());
 
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
-                .orElseThrow(() -> new ResourceNotFoundExeption(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Vehicle not found with id: " + dto.getVehicleId()));
 
         record.setVehicle(vehicle);
@@ -84,7 +84,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
     @Override
     public void deleteServiceRecord(Long id) {
         ServiceRecord record = serviceRecordRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundExeption(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Service record not found with id: " + id));
         serviceRecordRepository.delete(record);
     }
@@ -119,7 +119,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
     @Override
     public List<ServiceRecordDto> getServiceRecordsByVehicle(Long vehicleId) {
         if (!vehicleRepository.existsById(vehicleId)) {
-            throw new ResourceNotFoundExeption("Vehicle not found with id: " + vehicleId);
+            throw new ResourceNotFoundException("Vehicle not found with id: " + vehicleId);
         }
         return serviceRecordRepository.findByVehicleId(vehicleId)
                 .stream()
