@@ -1,40 +1,42 @@
 package net.javaguids.ems_backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import net.javaguids.ems_backend.dto.VehicleDto;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "vehicles")
-@AllArgsConstructor
-@NoArgsConstructor
 public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String numberPlate;
+    @Column(name = "vehicle_name", nullable = false, length = 150)
+    private String vehicleName;
 
-    @Column
-    String chassisNumber;
+    @Column(name = "registration_no", nullable = false, unique = true, length = 50)
+    private String registrationNo;
 
-    @Column
-    String make;
+    @Column(name = "manufacturer", length = 100)
+    private String manufacturer;
 
-    @Column
-    String model;
+    @Column(name = "model", length = 100)
+    private String model;
 
-    @Column
-    int year;
+    @Column(name = "year")
+    private Integer year;
 
-    @Column
-    int initialMileage;
+    @Column(name = "current_mileage_km")
+    private Integer currentMileageKm;
 
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }

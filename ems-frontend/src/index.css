@@ -639,6 +639,10 @@ img { display: block; max-width: 100%; }
 .badge-inactive    { background: var(--danger-bg); color: var(--danger-text); }
 .badge-warning     { background: var(--warning-bg); color: var(--warning-text); }
 .badge-info        { background: var(--info-bg); color: var(--info-text); }
+.badge-success     { background: var(--success-bg); color: var(--success-text); }
+.badge-primary     { background: var(--primary-light); color: var(--primary-dark); }
+.badge-danger      { background: var(--danger-bg); color: var(--danger-text); }
+.badge-secondary   { background: var(--bg-gray-100); color: var(--text-muted); }
 
 /* Role / Status badges (legacy) */
 .role-badge {

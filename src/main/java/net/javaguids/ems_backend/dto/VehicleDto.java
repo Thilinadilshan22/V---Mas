@@ -1,23 +1,21 @@
 package net.javaguids.ems_backend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import net.javaguids.ems_backend.entity.Vehicle;
+import lombok.*;
 
-@Setter
+import java.time.LocalDateTime;
+
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class VehicleDto {
 
     private Long id;
-    private String numberPlate;
-    private String chassisNumber;
-    private String make;
+    private String vehicleName;
+    private String registrationNo;
+    private String manufacturer;
     private String model;
-    private int year;
-    private int initialMileage;
-
+    private Integer year;
+    private Integer currentMileageKm;
+    private LocalDateTime createdAt;
 }
