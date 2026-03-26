@@ -40,4 +40,7 @@ public class FuelLog {
 
     @Column(nullable = false)
     private LocalDate date;
+
+    @Column(nullable = true)
+    private String driverUsername;
 }

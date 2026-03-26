@@ -25,11 +25,13 @@ public class FuelServiceImpl implements FuelService {
     private FuelLogRepository fuelLogRepository;
     private NotificationRepository notificationRepository;
 
+    // ==================== DRIVER-SCOPED METHODS ====================
+
     @Override
     @Transactional
-    public FuelLogDto addFuelLog(FuelLogDto fuelLogDto) {
-        log.info("Adding fuel log for vehicle: {}", fuelLogDto.getVehicleRegNumber());
-        
+    public FuelLogDto addFuelLog(FuelLogDto fuelLogDto, String driverUsername) {
+        log.info("Driver '{}' adding fuel log for vehicle: {}", driverUsername, fuelLogDto.getVehicleRegNumber());
+
         // Auto-calculate totalCost if not provided
         if (fuelLogDto.getTotalCost() == null || fuelLogDto.getTotalCost() == 0) {
             double calculatedCost = fuelLogDto.getLiters() * fuelLogDto.getCostPerLiter();
@@ -46,16 +48,65 @@ public class FuelServiceImpl implements FuelService {
         fuelLog.setTotalCost(fuelLogDto.getTotalCost());
         fuelLog.setMileage(fuelLogDto.getMileage());
         fuelLog.setDate(fuelLogDto.getDate() != null ? fuelLogDto.getDate() : LocalDate.now());
+        fuelLog.setDriverUsername(driverUsername); // ← tie this log to the driver
 
         // Save the fuel log
         FuelLog savedLog = fuelLogRepository.save(fuelLog);
         log.info("Fuel log saved with ID: {}", savedLog.getId());
 
         // Calculate efficiency and trigger notification if needed
-        checkAndTriggerLowEfficiencyNotification(savedLog);
+        checkAndTriggerLowEfficiencyNotification(savedLog, driverUsername);
 
         return mapToDto(savedLog);
     }
+
+    @Override
+    public List<FuelLogDto> getMyFuelLogs(String driverUsername) {
+        log.info("Driver '{}' fetching their own fuel logs", driverUsername);
+        return fuelLogRepository.findByDriverUsernameOrLegacy(driverUsername)
+                .stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public FuelLogDto getMyFuelLogById(Long id, String driverUsername) {
+        log.info("Driver '{}' fetching fuel log id: {}", driverUsername, id);
+        FuelLog fuelLog = fuelLogRepository.findByIdAndDriverUsernameOrLegacy(id, driverUsername)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Fuel log not found with id: " + id + " for driver: " + driverUsername));
+        return mapToDto(fuelLog);
+    }
+
+    @Override
+    @Transactional
+    public FuelLogDto updateMyFuelLog(Long id, FuelLogDto fuelLogDto, String driverUsername) {
+        log.info("Driver '{}' updating fuel log id: {}", driverUsername, id);
+
+        FuelLog fuelLog = fuelLogRepository.findByIdAndDriverUsernameOrLegacy(id, driverUsername)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Fuel log not found with id: " + id + " for driver: " + driverUsername));
+
+        // Update fields
+        fuelLog.setVehicleRegNumber(fuelLogDto.getVehicleRegNumber());
+        fuelLog.setFuelType(fuelLogDto.getFuelType());
+        fuelLog.setLiters(fuelLogDto.getLiters());
+        fuelLog.setCostPerLiter(fuelLogDto.getCostPerLiter());
+
+        // Recalculate totalCost
+        double totalCost = (fuelLogDto.getTotalCost() != null && fuelLogDto.getTotalCost() != 0)
+                ? fuelLogDto.getTotalCost()
+                : fuelLogDto.getLiters() * fuelLogDto.getCostPerLiter();
+        fuelLog.setTotalCost(totalCost);
+        fuelLog.setMileage(fuelLogDto.getMileage());
+        if (fuelLogDto.getDate() != null) {
+            fuelLog.setDate(fuelLogDto.getDate());
+        }
+
+        FuelLog updated = fuelLogRepository.save(fuelLog);
+        log.info("Fuel log {} updated by driver '{}'", id, driverUsername);
+        return mapToDto(updated);
+    }
+
+    // ==================== ADMIN / SHARED ANALYTICS ====================
 
     @Override
     public FuelSummaryDto getCurrentMonthSummary() {
@@ -69,7 +120,7 @@ public class FuelServiceImpl implements FuelService {
         Double totalCost = fuelLogRepository.getTotalCostForMonth(month, year);
         Double totalVolume = totalDiesel + totalPetrol;
 
-        log.info("Summary - Diesel: {}, Petrol: {}, Total: {}, Cost: {}", 
+        log.info("Summary - Diesel: {}, Petrol: {}, Total: {}, Cost: {}",
                  totalDiesel, totalPetrol, totalVolume, totalCost);
 
         return new FuelSummaryDto(totalDiesel, totalPetrol, totalVolume, totalCost);
@@ -117,7 +168,7 @@ public class FuelServiceImpl implements FuelService {
 
         for (String vehicleRegNumber : allVehicles) {
             List<FuelLog> logs = fuelLogRepository.findByVehicleRegNumberOrderByDateDesc(vehicleRegNumber);
-            
+
             if (logs.isEmpty()) {
                 continue;
             }
@@ -134,7 +185,7 @@ public class FuelServiceImpl implements FuelService {
             );
 
             statsList.add(stats);
-            log.info("Stats for vehicle {}: Efficiency={}, Spending={}, Status={}", 
+            log.info("Stats for vehicle {}: Efficiency={}, Spending={}, Status={}",
                      vehicleRegNumber, fuelEfficiency, totalSpending, efficiencyStatus);
         }
 
@@ -203,13 +254,14 @@ public class FuelServiceImpl implements FuelService {
 
     /**
      * Check efficiency and trigger notification if below threshold
-     * Core responsibility: Create notification entry for low efficiency
+     * Scoped to driver's own previous log for accuracy
      */
-    private void checkAndTriggerLowEfficiencyNotification(FuelLog currentLog) {
+    private void checkAndTriggerLowEfficiencyNotification(FuelLog currentLog, String driverUsername) {
         log.info("Checking efficiency for notification trigger");
-        
-        List<FuelLog> previousLogs = fuelLogRepository.findPreviousLog(
-            currentLog.getVehicleRegNumber(), 
+
+        List<FuelLog> previousLogs = fuelLogRepository.findPreviousLogByDriver(
+            driverUsername,
+            currentLog.getVehicleRegNumber(),
             currentLog.getDate()
         );
 
@@ -232,9 +284,10 @@ public class FuelServiceImpl implements FuelService {
         // Trigger notification if efficiency is below threshold
         if (efficiency < 5.0) {
             String message = String.format(
-                "Low Efficiency Alert: Vehicle %s has fuel efficiency of %.2f km/L (below 5 km/L threshold)",
+                "Low Efficiency Alert: Vehicle %s has fuel efficiency of %.2f km/L (below 5 km/L threshold) - reported by driver %s",
                 currentLog.getVehicleRegNumber(),
-                efficiency
+                efficiency,
+                driverUsername
             );
 
             Notification notification = new Notification(
@@ -260,7 +313,8 @@ public class FuelServiceImpl implements FuelService {
             fuelLog.getCostPerLiter(),
             fuelLog.getTotalCost(),
             fuelLog.getMileage(),
-            fuelLog.getDate()
+            fuelLog.getDate(),
+            fuelLog.getDriverUsername()
         );
     }
 }
