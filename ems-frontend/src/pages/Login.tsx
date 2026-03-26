@@ -30,7 +30,7 @@ const Login: React.FC = () => {
     return (
         <div className="auth-page">
             <div className="auth-card">
-                <h2>VMAS Login</h2>
+                <h2>V-MAS Login</h2>
                 {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
