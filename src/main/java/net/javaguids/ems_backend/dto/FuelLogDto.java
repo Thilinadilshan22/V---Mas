@@ -20,4 +20,5 @@ public class FuelLogDto {
     private Double totalCost;
     private Double mileage;
     private LocalDate date;
+    private String driverUsername;
 }

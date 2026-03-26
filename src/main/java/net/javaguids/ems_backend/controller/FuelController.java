@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -20,21 +21,68 @@ public class FuelController {
 
     private FuelService fuelService;
 
+    // ==================== DRIVER ENDPOINTS ====================
+
     /**
-     * POST /api/fuel/add - Add a new fuel log entry
-     * Automatically calculates totalCost if not provided
-     * Triggers low efficiency notification if km/L < 5
+     * POST /api/fuel/add
+     * Driver adds their own fuel log. The logged-in user is captured from the JWT principal.
      */
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse<FuelLogDto>> addFuelLog(@RequestBody FuelLogDto fuelLogDto) {
-        log.info("POST /api/fuel/add - Adding fuel log for vehicle: {}", fuelLogDto.getVehicleRegNumber());
-        FuelLogDto savedLog = fuelService.addFuelLog(fuelLogDto);
+    public ResponseEntity<ApiResponse<FuelLogDto>> addFuelLog(
+            @RequestBody FuelLogDto fuelLogDto,
+            Principal principal) {
+        String driverUsername = principal.getName();
+        log.info("POST /api/fuel/add - Driver '{}' adding fuel log for vehicle: {}",
+                 driverUsername, fuelLogDto.getVehicleRegNumber());
+        FuelLogDto savedLog = fuelService.addFuelLog(fuelLogDto, driverUsername);
         return ApiResponseUtil.success("Fuel log added successfully", savedLog, HttpStatus.CREATED);
     }
 
     /**
-     * GET /api/fuel/summary - Get current month summary
-     * Returns totalDiesel, totalPetrol, totalVolume, and totalCost
+     * GET /api/fuel/my-logs
+     * Driver fetches only their own fuel history.
+     */
+    @GetMapping("/my-logs")
+    public ResponseEntity<ApiResponse<List<FuelLogDto>>> getMyFuelLogs(Principal principal) {
+        String driverUsername = principal.getName();
+        log.info("GET /api/fuel/my-logs - Driver '{}' fetching their logs", driverUsername);
+        List<FuelLogDto> logs = fuelService.getMyFuelLogs(driverUsername);
+        return ApiResponseUtil.success("Fuel logs retrieved successfully", logs, HttpStatus.OK);
+    }
+
+    /**
+     * GET /api/fuel/my-logs/{id}
+     * Driver fetches a specific log — only if it belongs to them.
+     */
+    @GetMapping("/my-logs/{id}")
+    public ResponseEntity<ApiResponse<FuelLogDto>> getMyFuelLogById(
+            @PathVariable Long id,
+            Principal principal) {
+        String driverUsername = principal.getName();
+        log.info("GET /api/fuel/my-logs/{} - Driver '{}' fetching log", id, driverUsername);
+        FuelLogDto fuelLog = fuelService.getMyFuelLogById(id, driverUsername);
+        return ApiResponseUtil.success("Fuel log retrieved successfully", fuelLog, HttpStatus.OK);
+    }
+
+    /**
+     * PUT /api/fuel/my-logs/{id}
+     * Driver updates their own fuel log entry.
+     */
+    @PutMapping("/my-logs/{id}")
+    public ResponseEntity<ApiResponse<FuelLogDto>> updateMyFuelLog(
+            @PathVariable Long id,
+            @RequestBody FuelLogDto fuelLogDto,
+            Principal principal) {
+        String driverUsername = principal.getName();
+        log.info("PUT /api/fuel/my-logs/{} - Driver '{}' updating log", id, driverUsername);
+        FuelLogDto updated = fuelService.updateMyFuelLog(id, fuelLogDto, driverUsername);
+        return ApiResponseUtil.success("Fuel log updated successfully", updated, HttpStatus.OK);
+    }
+
+    // ==================== ADMIN / SHARED ANALYTICS ENDPOINTS ====================
+
+    /**
+     * GET /api/fuel/summary - Current month summary (admin/manager use)
      */
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<FuelSummaryDto>> getCurrentMonthSummary() {
@@ -44,8 +92,7 @@ public class FuelController {
     }
 
     /**
-     * GET /api/fuel/chart - Get monthly consumption data for React Bar Chart
-     * Returns data grouped by month for Diesel and Petrol
+     * GET /api/fuel/chart - Monthly consumption chart data
      */
     @GetMapping("/chart")
     public ResponseEntity<ApiResponse<FuelChartDto>> getMonthlyChartData() {
@@ -55,8 +102,7 @@ public class FuelController {
     }
 
     /**
-     * GET /api/fuel/stats - Get all vehicle statistics
-     * Returns list of vehicles with efficiency and spending for dashboard table
+     * GET /api/fuel/stats - All vehicle statistics
      */
     @GetMapping("/stats")
     public ResponseEntity<ApiResponse<List<VehicleFuelStatsDto>>> getAllVehicleStats() {
@@ -66,20 +112,21 @@ public class FuelController {
     }
 
     /**
-     * GET /api/fuel/{id} - Get fuel log by ID
+     * GET /api/fuel/log/{id} - Get any fuel log by ID (admin use)
      */
-    @GetMapping("/{id}")
+    @GetMapping("/log/{id}")
     public ResponseEntity<ApiResponse<FuelLogDto>> getFuelLogById(@PathVariable Long id) {
-        log.info("GET /api/fuel/{} - Fetching fuel log by ID", id);
+        log.info("GET /api/fuel/log/{} - Fetching fuel log by ID", id);
         FuelLogDto fuelLog = fuelService.getFuelLogById(id);
         return ApiResponseUtil.success("Fuel log retrieved successfully", fuelLog, HttpStatus.OK);
     }
 
     /**
-     * GET /api/fuel/vehicle/{vehicleRegNumber} - Get all logs for a specific vehicle
+     * GET /api/fuel/vehicle/{vehicleRegNumber} - All logs for a specific vehicle (admin use)
      */
     @GetMapping("/vehicle/{vehicleRegNumber}")
-    public ResponseEntity<ApiResponse<List<FuelLogDto>>> getFuelLogsByVehicle(@PathVariable String vehicleRegNumber) {
+    public ResponseEntity<ApiResponse<List<FuelLogDto>>> getFuelLogsByVehicle(
+            @PathVariable String vehicleRegNumber) {
         log.info("GET /api/fuel/vehicle/{} - Fetching logs for vehicle", vehicleRegNumber);
         List<FuelLogDto> logs = fuelService.getFuelLogsByVehicle(vehicleRegNumber);
         return ApiResponseUtil.success("Vehicle fuel logs retrieved successfully", logs, HttpStatus.OK);
