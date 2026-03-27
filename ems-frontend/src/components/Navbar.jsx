@@ -18,7 +18,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-content">
-        <div className="navbar-brand">VMAS</div>
+        <div className="navbar-brand">V-MAS</div>
         <div className="navbar-menu">
           <Link to="/dashboard" className={`navbar-link ${isActive('/dashboard')}`}>
             Dashboard

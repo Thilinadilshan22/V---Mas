@@ -55,7 +55,7 @@ const RegisterPage = () => {
           <div className="auth-brand-logo">🚗</div>
           <div className="auth-brand-name">V-MAS</div>
           <p className="auth-brand-tagline">
-            Join the Smart Vehicle Management System and take control of your fleet operations.
+            Join the Smart Vehicle Service Management System and take control of your fleet operations.
           </p>
           <ul className="auth-feature-list">
             <li className="auth-feature-item">

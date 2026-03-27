@@ -18,7 +18,7 @@ const Dashboard: React.FC = () => {
                         Hello, {user?.userName}!
                     </h1>
                     <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>
-                        Welcome to your VMAS Control Center.
+                        Welcome to your V-MAS Control Center.
                     </p>
                 </div>
             </div>
