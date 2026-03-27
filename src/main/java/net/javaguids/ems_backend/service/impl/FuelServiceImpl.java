@@ -209,7 +209,88 @@ public class FuelServiceImpl implements FuelService {
                 .collect(Collectors.toList());
     }
 
+    // ==================== CONTROLLER / ADMIN CRUD ====================
+
+    @Override
+    public List<FuelLogDto> getAllFuelLogs() {
+        log.info("Controller fetching all fuel logs");
+        return fuelLogRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(FuelLog::getDate).reversed())
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public FuelLogDto addFuelLogByController(FuelLogDto fuelLogDto) {
+        log.info("Controller adding fuel log for vehicle: {}", fuelLogDto.getVehicleRegNumber());
+
+        // Auto-calculate totalCost if not provided
+        if (fuelLogDto.getTotalCost() == null || fuelLogDto.getTotalCost() == 0) {
+            double calculatedCost = fuelLogDto.getLiters() * fuelLogDto.getCostPerLiter();
+            fuelLogDto.setTotalCost(calculatedCost);
+            log.info("Auto-calculated totalCost: {}", calculatedCost);
+        }
+
+        FuelLog fuelLog = new FuelLog();
+        fuelLog.setVehicleRegNumber(fuelLogDto.getVehicleRegNumber());
+        fuelLog.setFuelType(fuelLogDto.getFuelType());
+        fuelLog.setLiters(fuelLogDto.getLiters());
+        fuelLog.setCostPerLiter(fuelLogDto.getCostPerLiter());
+        fuelLog.setTotalCost(fuelLogDto.getTotalCost());
+        fuelLog.setMileage(fuelLogDto.getMileage());
+        fuelLog.setDate(fuelLogDto.getDate() != null ? fuelLogDto.getDate() : LocalDate.now());
+        // driverUsername may be supplied in the DTO (optional for controller)
+        fuelLog.setDriverUsername(fuelLogDto.getDriverUsername());
+
+        FuelLog savedLog = fuelLogRepository.save(fuelLog);
+        log.info("Controller saved fuel log with ID: {}", savedLog.getId());
+        return mapToDto(savedLog);
+    }
+
+    @Override
+    @Transactional
+    public FuelLogDto updateFuelLogByController(Long id, FuelLogDto fuelLogDto) {
+        log.info("Controller updating fuel log id: {}", id);
+
+        FuelLog fuelLog = fuelLogRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("FuelLog not found with id: " + id));
+
+        fuelLog.setVehicleRegNumber(fuelLogDto.getVehicleRegNumber());
+        fuelLog.setFuelType(fuelLogDto.getFuelType());
+        fuelLog.setLiters(fuelLogDto.getLiters());
+        fuelLog.setCostPerLiter(fuelLogDto.getCostPerLiter());
+
+        double totalCost = (fuelLogDto.getTotalCost() != null && fuelLogDto.getTotalCost() != 0)
+                ? fuelLogDto.getTotalCost()
+                : fuelLogDto.getLiters() * fuelLogDto.getCostPerLiter();
+        fuelLog.setTotalCost(totalCost);
+        fuelLog.setMileage(fuelLogDto.getMileage());
+        if (fuelLogDto.getDate() != null) {
+            fuelLog.setDate(fuelLogDto.getDate());
+        }
+        if (fuelLogDto.getDriverUsername() != null) {
+            fuelLog.setDriverUsername(fuelLogDto.getDriverUsername());
+        }
+
+        FuelLog updated = fuelLogRepository.save(fuelLog);
+        log.info("Fuel log {} updated by controller", id);
+        return mapToDto(updated);
+    }
+
+    @Override
+    @Transactional
+    public void deleteFuelLog(Long id) {
+        log.info("Controller deleting fuel log id: {}", id);
+        FuelLog fuelLog = fuelLogRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("FuelLog not found with id: " + id));
+        fuelLogRepository.delete(fuelLog);
+        log.info("Fuel log {} deleted by controller", id);
+    }
+
     // ==================== PRIVATE HELPER METHODS ====================
+
 
     /**
      * Calculate fuel efficiency (km/L) for a vehicle
