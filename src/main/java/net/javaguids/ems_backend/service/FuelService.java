@@ -29,4 +29,18 @@ public interface FuelService {
     FuelLogDto getFuelLogById(Long id);
 
     List<FuelLogDto> getFuelLogsByVehicle(String vehicleRegNumber);
+
+    // ---- Controller-scoped CRUD ----
+
+    /** Get ALL fuel logs across all drivers (controller/admin) */
+    List<FuelLogDto> getAllFuelLogs();
+
+    /** Controller/admin adds a fuel log (can assign any driver) */
+    FuelLogDto addFuelLogByController(FuelLogDto fuelLogDto);
+
+    /** Controller/admin updates any fuel log by ID */
+    FuelLogDto updateFuelLogByController(Long id, FuelLogDto fuelLogDto);
+
+    /** Controller/admin deletes any fuel log by ID */
+    void deleteFuelLog(Long id);
 }
